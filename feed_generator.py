@@ -89,6 +89,13 @@ print(f"✓ board.json 생성 — 누적 {total_pct}% · 현재평균 {avg_open}
 
 # ---- 라이브 차트 피드: 종목별 가격 시리즈 + 박제 목표가 + 설정일 ----
 def build_charts():
+    # 공개 범위 = 보드에 게시된 보유 종목만 (워치리스트·청산 종목은 비공개 — codex 전용)
+    # 수동/데모 발행 시 XFOLD_LIVE_CODES="064550,013360,..." 로 재정의 가능
+    env_codes = os.environ.get('XFOLD_LIVE_CODES', '').strip()
+    if env_codes:
+        hold_codes = {c.strip() for c in env_codes.split(',') if c.strip()}
+    else:
+        hold_codes = {p['code'] for p in positions}
     ledger_state = j('ledger_state.json', {}).get('tickers', {})
     gate = j('buy_gate_v3.json', {})
     diag = {r.get('ticker'): r for r in (j('signal_diagnose.json', []) or []) if isinstance(r, dict)}
@@ -101,6 +108,8 @@ def build_charts():
     os.makedirs(cdir, exist_ok=True)
     listing = []
     for tk, rec in trk.items():
+        if tk.split('.')[0] not in hold_codes:
+            continue                      # 보유 외 종목은 공개 피드에서 제외
         pf = os.path.join(X, 'prices', f'{tk}.json')
         if not os.path.exists(pf):
             continue
@@ -157,7 +166,12 @@ def build_charts():
                   open(os.path.join(cdir, tk.replace('.', '_') + '.json'), 'w'), ensure_ascii=False)
         listing.append({'ticker': tk, 'name': rec.get('name', tk), 'status': st})
     json.dump(listing, open(os.path.join(cdir, 'index.json'), 'w'), ensure_ascii=False, indent=1)
-    print(f'✓ 차트 피드 {len(listing)}종목')
+    # 보유 외 종목의 옛 차트 파일 정리 (공개 저장소에서 제거)
+    keep = {x['ticker'].replace('.', '_') + '.json' for x in listing} | {'index.json'}
+    for f in os.listdir(cdir):
+        if f.endswith('.json') and f not in keep:
+            os.remove(os.path.join(cdir, f))
+    print(f'✓ 차트 피드 {len(listing)}종목 (보유 한정 공개)')
 
 trk = j('watchlist_tracking.json', {})
 build_charts()
