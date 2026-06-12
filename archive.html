@@ -9,66 +9,80 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F5F5F2; --paper:#FFFFFF; --ink:#0A0A0A; --sub:#6B7280; --faint:#9CA3AF;
-  --hair:#E6E6E0; --board:#0A0B0D; --amber:#B8860B;
-  --up:#D94F45; --down:#3D7BD9; --flat:#8A8C92;
+  --bg:#F5F5F2; --ink:#0A0A0A; --sub:#6B7280; --faint:#9CA3AF;
+  --panel:#0A0B0D; --bezel:#101114; --hairD:rgba(255,255,255,.07);
+  --txt:#F6F6F0; --dim:#6E7077; --amber:#FFC542;
+  --up:#FF6157; --down:#5B9DFF; --flat:#9FA1A7;
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 body{font-family:'Pretendard',-apple-system,sans-serif; background:var(--bg); color:var(--ink); overflow-x:hidden;}
+/* 공통 4K 배경 + 화이트 워시 */
+.bgphoto{position:fixed; inset:0; z-index:-2; background:url('./assets/bg.jpg') center 38%/cover no-repeat;}
+.bgwash{position:fixed; inset:0; z-index:-1;
+  background:linear-gradient(180deg, rgba(247,247,244,.86), rgba(243,243,239,.8));}
 body::before{
-  content:''; position:fixed; inset:0; pointer-events:none; z-index:80; opacity:.025;
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:80; opacity:.028;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(4) infinite;
 }
+@keyframes grain{0%{transform:translate(0,0);}25%{transform:translate(-4%,3%);}50%{transform:translate(3%,-4%);}75%{transform:translate(-2%,-2%);}100%{transform:translate(0,0);}}
+body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79;
+  background:radial-gradient(ellipse 135% 100% at 50% 40%, transparent 58%, rgba(40,40,38,.10) 100%);}
 .nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; justify-content:space-between;
-  padding:22px 30px; background:linear-gradient(180deg, rgba(245,245,242,.96), rgba(245,245,242,0));}
+  padding:22px 30px; background:linear-gradient(180deg, rgba(245,245,242,.97), rgba(245,245,242,0));}
 .nav .grp{display:flex; gap:26px;}
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a.on, .nav a:hover{color:var(--ink);}
 
-.wrap{max-width:980px; margin:0 auto; padding:13vh 22px 80px;}
+.wrap{max-width:980px; margin:0 auto; padding:13vh 22px 80px; position:relative; z-index:10;}
 .page-title{font-size:13px; letter-spacing:0.42em; color:#8A8A84; font-weight:800; text-align:center;}
 .page-sub{text-align:center; color:var(--faint); font-size:12px; letter-spacing:0.12em; margin-top:10px;}
 
+/* ===== 다크 패널 공통 (보드 베젤 언어) ===== */
+.panel{background:var(--panel); border-radius:10px; padding:9px; margin-top:14px;
+  box-shadow:0 24px 54px -30px rgba(20,20,22,.4), 0 8px 20px rgba(20,20,22,.13), inset 0 1px 0 rgba(255,255,255,.05);}
+.panel .inner{background:var(--bezel); border-radius:6px; box-shadow:inset 0 3px 14px rgba(0,0,0,.6);}
+.ptitle{font-family:'JetBrains Mono'; font-size:10.5px; font-weight:800; letter-spacing:0.34em; color:var(--amber);}
+
 /* ===== 수익률 추이 ===== */
-.chartcard{background:var(--paper); border:1px solid var(--hair); border-radius:12px;
-  padding:26px 28px 20px; margin:42px 0 14px; box-shadow:0 10px 30px -18px rgba(20,20,22,.15);}
-.chartcard .lab{font-size:10px; letter-spacing:0.3em; color:var(--faint); font-weight:800; margin-bottom:4px;}
-.chartcard .big{font-family:'JetBrains Mono'; font-size:30px; font-weight:800; margin:4px 0 12px;}
+.chartcard{margin-top:42px;}
+.chartcard .inner{padding:22px 24px 16px;}
+.chartcard .big{font-family:'JetBrains Mono'; font-size:30px; font-weight:800; margin:10px 0 12px;}
 .big.up{color:var(--up);} .big.down{color:var(--down);} .big.flat{color:var(--flat);}
 canvas{width:100%; height:120px; display:block;}
 
 /* ===== 장부 (게시판) ===== */
-.ledger{background:var(--paper); border:1px solid var(--hair); border-radius:12px; overflow:hidden;
-  box-shadow:0 10px 30px -18px rgba(20,20,22,.15);}
+.ledger .inner{overflow:hidden; padding:6px 0;}
 .l-head{display:grid; grid-template-columns:120px 1fr 110px 110px 80px 90px; gap:8px;
-  padding:14px 22px; border-bottom:1px solid var(--hair);
-  font-size:10px; letter-spacing:0.22em; color:var(--faint); font-weight:800;}
+  padding:14px 22px; border-bottom:1px solid var(--hairD);
+  font-size:10px; letter-spacing:0.22em; color:var(--dim); font-weight:800; font-family:'JetBrains Mono';}
 .l-head span:nth-child(n+3){text-align:right;}
 .l-row{display:grid; grid-template-columns:120px 1fr 110px 110px 80px 90px; gap:8px;
-  padding:16px 22px; border-bottom:1px solid var(--hair); cursor:pointer; transition:background .15s;}
-.l-row:hover{background:#FAFAF7;}
-.l-row:last-child{border-bottom:none;}
-.l-date{font-family:'JetBrains Mono'; font-weight:700; font-size:13px;}
-.l-sum{color:var(--sub); font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.l-num{font-family:'JetBrains Mono'; font-weight:700; font-size:13px; text-align:right;}
+  padding:16px 22px; border-bottom:1px solid var(--hairD); cursor:pointer; transition:background .15s;}
+.l-row:hover{background:rgba(255,255,255,.045);}
+.l-item:last-child .l-row{border-bottom:none;}
+.l-date{font-family:'JetBrains Mono'; font-weight:700; font-size:13px; color:var(--txt);}
+.l-sum{color:var(--flat); font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.l-num{font-family:'JetBrains Mono'; font-weight:700; font-size:13px; text-align:right; color:var(--txt);}
 .l-num.up{color:var(--up);} .l-num.down{color:var(--down);} .l-num.flat{color:var(--flat);}
-.l-link{text-align:right; font-size:11px; color:var(--faint); letter-spacing:0.06em;}
-.empty{padding:60px 20px; text-align:center; color:var(--faint); font-size:13px; letter-spacing:0.1em;}
+.l-link{text-align:right; font-size:11px; color:var(--dim); letter-spacing:0.06em;}
+.empty{padding:60px 20px; text-align:center; color:var(--dim); font-size:13px; letter-spacing:0.1em;}
 
 /* ===== 상세 (행 클릭 → 펼침) ===== */
-.detail{display:none; grid-column:1 / -1; padding:8px 0 18px;}
+.detail{display:none; grid-column:1 / -1; padding:8px 22px 18px;}
 .l-item.open .detail{display:block;}
-.detail img{width:100%; border-radius:10px; box-shadow:0 20px 50px -20px rgba(20,20,22,.4); margin:12px 0 18px;}
+.l-item.open .l-row{background:rgba(255,255,255,.03);}
+.detail img{width:100%; border-radius:8px; box-shadow:0 20px 50px -20px rgba(0,0,0,.8); margin:12px 0 18px;}
 .d-calls{margin-top:4px;}
-.d-call{display:flex; gap:14px; padding:11px 4px; border-top:1px solid var(--hair); align-items:baseline;}
-.d-call .t{font-family:'JetBrains Mono'; font-size:12.5px; font-weight:800; min-width:48px;}
+.d-call{display:flex; gap:14px; padding:11px 4px; border-top:1px solid var(--hairD); align-items:baseline;}
+.d-call .t{font-family:'JetBrains Mono'; font-size:12.5px; font-weight:800; min-width:48px; color:var(--txt);}
 .d-call .a{font-size:12.5px; font-weight:800; color:var(--amber); min-width:40px;}
-.d-call .n{font-size:12.5px; color:var(--sub);}
+.d-call .n{font-size:12.5px; color:var(--flat);}
 .d-proof{display:flex; gap:14px; margin-top:16px;}
-.d-proof a{font-size:11px; color:var(--sub); text-decoration:none; border:1px solid var(--hair);
+.d-proof a{font-size:11px; color:var(--flat); text-decoration:none; border:1px solid rgba(255,255,255,.16);
   border-radius:16px; padding:7px 14px; letter-spacing:0.06em;}
-.d-proof a:hover{color:var(--ink); border-color:#C9C9C2;}
-footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5px; letter-spacing:0.06em; line-height:1.9;}
+.d-proof a:hover{color:var(--txt); border-color:rgba(255,255,255,.4);}
+footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5px; letter-spacing:0.06em; line-height:1.9; position:relative; z-index:10;}
 @media (max-width:760px){
   .l-head{display:none;}
   .l-row{grid-template-columns:1fr auto; padding:14px 16px;}
@@ -77,6 +91,7 @@ footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5p
 </style>
 </head>
 <body>
+<div class="bgphoto"></div><div class="bgwash"></div>
 <nav class="nav">
   <a href="./index.html">XFOLD LIVE</a>
   <div class="grp">
@@ -91,18 +106,18 @@ footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5p
   <div class="page-title">THE LEDGER</div>
   <div class="page-sub">매일 장 마감, 그날의 보드가 여기 박제된다 — 사후 수정 불가</div>
 
-  <div class="chartcard">
-    <div class="lab">CUMULATIVE RETURN · 누적 수익률 추이</div>
+  <div class="panel chartcard"><div class="inner">
+    <div class="ptitle">CUMULATIVE RETURN — 누적 수익률 추이</div>
     <div class="big" id="bigRet">—</div>
     <canvas id="spark" height="120"></canvas>
-  </div>
+  </div></div>
 
-  <div class="ledger">
+  <div class="panel ledger"><div class="inner">
     <div class="l-head">
       <span>날짜</span><span>그날의 판단</span><span>누적</span><span>일간</span><span>보유</span><span></span>
     </div>
     <div id="rows"><div class="empty">첫 박제를 기다리는 중…</div></div>
-  </div>
+  </div></div>
 </div>
 
 <footer>
@@ -174,7 +189,7 @@ async function toggle(item, date) {
   det.innerHTML = `
     <img loading="lazy" src="./archive/${date}.png" alt="${date} 박제 보드">
     <div class="d-calls">
-      <div class="lab" style="font-size:10px;letter-spacing:0.3em;color:#9CA3AF;font-weight:800;margin-bottom:6px;">그날 XFOLD의 판단 (하루 3회)</div>
+      <div class="lab" style="font-size:10px;letter-spacing:0.3em;color:#FFC542;font-weight:800;margin-bottom:6px;font-family:'JetBrains Mono';">그날 XFOLD의 판단 (하루 3회)</div>
       ${calls || '<div class="d-call"><span class="n">기록 없음</span></div>'}
     </div>
     <div class="d-proof">
@@ -194,10 +209,10 @@ function drawSpark(vals) {
   const px = i => 8 + (W - 16) * i / (vals.length - 1);
   const py = v => 10 + (H - 24) * (1 - (v - mn) / ((mx - mn) || 1));
   /* 0% 기준선 */
-  x.strokeStyle = '#E6E6E0'; x.lineWidth = 1; x.setLineDash([3, 4]);
+  x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = 1; x.setLineDash([3, 4]);
   x.beginPath(); x.moveTo(8, py(0)); x.lineTo(W - 8, py(0)); x.stroke(); x.setLineDash([]);
   /* 라인 */
-  x.strokeStyle = vals[vals.length - 1] >= 0 ? '#D94F45' : '#3D7BD9'; x.lineWidth = 2;
+  x.strokeStyle = vals[vals.length - 1] >= 0 ? '#FF6157' : '#5B9DFF'; x.lineWidth = 2;
   x.beginPath(); vals.forEach((v, i) => i ? x.lineTo(px(i), py(v)) : x.moveTo(px(i), py(v))); x.stroke();
   /* 마지막 점 */
   x.fillStyle = x.strokeStyle;

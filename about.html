@@ -12,6 +12,10 @@
   --amber:#B8860B;}
 *{box-sizing:border-box; margin:0; padding:0;}
 body{font-family:'Pretendard',-apple-system,sans-serif; background:var(--bg); color:var(--ink);}
+/* 공통 4K 배경 + 화이트 워시 */
+.bgphoto{position:fixed; inset:0; z-index:-2; background:url('./assets/bg.jpg') center 38%/cover no-repeat;}
+.bgwash{position:fixed; inset:0; z-index:-1;
+  background:linear-gradient(180deg, rgba(247,247,244,.9), rgba(243,243,239,.85));}
 body::before{content:''; position:fixed; inset:0; pointer-events:none; z-index:80; opacity:.025;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
 .nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; justify-content:space-between;
@@ -35,26 +39,30 @@ h2{font-size:11px; letter-spacing:0.4em; color:var(--amber); font-weight:800; ma
 .prose b{color:var(--ink);}
 
 /* 엔진 3행 — 이름만, 설명 한 줄 */
-.engines{margin-top:34px; border-top:1px solid var(--hair);}
-.eng{display:flex; justify-content:space-between; align-items:baseline; padding:22px 6px; border-bottom:1px solid var(--hair);}
-.eng .n{font-family:'JetBrains Mono'; font-size:12px; font-weight:800; letter-spacing:0.18em; color:var(--ink);}
-.eng .d{font-size:13.5px; color:var(--sub);}
+.engines{margin-top:34px; background:#0A0B0D; border-radius:10px; padding:9px;
+  box-shadow:0 24px 54px -30px rgba(20,20,22,.4), 0 8px 20px rgba(20,20,22,.13);}
+.engines .eng-in{background:#101114; border-radius:6px; padding:4px 20px; box-shadow:inset 0 3px 14px rgba(0,0,0,.6);}
+.eng{display:flex; justify-content:space-between; align-items:baseline; padding:22px 2px; border-bottom:1px solid rgba(255,255,255,.07);}
+.eng:last-child{border-bottom:0;}
+.eng .n{font-family:'JetBrains Mono'; font-size:12px; font-weight:800; letter-spacing:0.18em; color:#FFC542;}
+.eng .d{font-size:13.5px; color:#9FA1A7;}
 
 /* 검증 스탯 — 숫자가 말하게 */
 .stats{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:36px;}
-.stat{background:var(--paper); border:1px solid var(--hair); border-radius:14px; padding:30px 20px; text-align:center;}
-.stat .v{font-family:'JetBrains Mono'; font-size:34px; font-weight:800; letter-spacing:-0.02em;}
-.stat .k{font-size:11.5px; color:var(--faint); margin-top:10px; line-height:1.7; word-break:keep-all;}
+.stat{background:#101114; border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:30px 20px; text-align:center;
+  box-shadow:0 18px 40px -26px rgba(20,20,22,.5);}
+.stat .v{font-family:'JetBrains Mono'; font-size:34px; font-weight:800; letter-spacing:-0.02em; color:#F6F6F0;}
+.stat .k{font-size:11.5px; color:#9FA1A7; margin-top:10px; line-height:1.7; word-break:keep-all;}
 .stat.wide{grid-column:1 / -1;}
 .stats-note{font-size:11.5px; color:var(--faint); text-align:center; margin-top:16px; line-height:1.9;}
 
 /* 박제 3계명 · 로드맵 카드 */
 .seals{margin-top:34px; display:flex; flex-direction:column; gap:10px;}
-.seal{background:var(--paper); border:1px solid var(--hair); border-radius:12px; padding:18px 22px;
-  display:flex; gap:16px; align-items:baseline;}
-.seal .no{font-family:'JetBrains Mono'; font-size:12px; font-weight:800; color:var(--amber); white-space:nowrap;}
-.seal .t{font-size:13.5px; color:var(--sub); line-height:1.8; word-break:keep-all;}
-.seal .t b{color:var(--ink);}
+.seal{background:#101114; border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:18px 22px;
+  display:flex; gap:16px; align-items:baseline; box-shadow:0 18px 40px -26px rgba(20,20,22,.5);}
+.seal .no{font-family:'JetBrains Mono'; font-size:12px; font-weight:800; color:#FFC542; white-space:nowrap;}
+.seal .t{font-size:13.5px; color:#9FA1A7; line-height:1.8; word-break:keep-all;}
+.seal .t b{color:#F6F6F0;}
 
 /* 마침 문장 + 면책 */
 .closing{margin-top:14vh; text-align:center;}
@@ -67,6 +75,7 @@ footer{text-align:center; padding:30px 20px 36px; color:#9C9C96; font-size:10.5p
 </style>
 </head>
 <body>
+<div class="bgphoto"></div><div class="bgwash"></div>
 <nav class="nav">
   <a href="./index.html">XFOLD LIVE</a>
   <div class="grp">
@@ -96,11 +105,11 @@ footer{text-align:center; padding:30px 20px 36px; color:#9C9C96; font-size:10.5p
   <section>
     <h2>THE ENGINE</h2>
     <p class="prose">세 개의 엔진이 가격·거래량·사건 데이터를 독립적으로 판단합니다.<br>구조는 공개하되 세부 변수는 비공개입니다.<br><b>판단과 결과는 예외 없이 기록으로 공개됩니다.</b></p>
-    <div class="engines">
+    <div class="engines"><div class="eng-in">
       <div class="eng"><span class="n">ENGINE 01 — TIDE</span><span class="d">시장 전체의 밀물과 썰물을 판별한다</span></div>
       <div class="eng"><span class="n">ENGINE 02 — CYCLE</span><span class="d">반복되는 파동의 시작점에서 올라탄다</span></div>
       <div class="eng"><span class="n">ENGINE 03 — SHOCK</span><span class="d">군중이 공포에 팔 때를 기다린다</span></div>
-    </div>
+    </div></div>
   </section>
 
   <section>

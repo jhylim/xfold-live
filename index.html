@@ -31,27 +31,14 @@ body::after{
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a:hover{color:#0A0A0A;}
 
-/* ════════ 장면: 화이트 인더스트리얼 갤러리 (애플스토어 톤) ════════ */
+/* ════════ 장면: 4K 갤러리 사진 (전 페이지 공통 배경) ════════ */
 .scene{position:relative; width:100vw; height:100vh; min-height:720px; overflow:hidden;
-  background:linear-gradient(180deg,#FCFCFA 0%,#F7F7F4 52%,#F2F2EE 74%,#E3E3DE 74.3%,#D9D9D3 100%);}
-/* 천창 (스카이라이트 그리드 — 인더스트리얼) */
-.truss{position:absolute; top:0; left:-3%; right:-3%; height:9vh;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10vw, rgba(30,31,34,.16) 10vw calc(10vw + 8px)),
-    linear-gradient(180deg, rgba(238,240,238,1) 0%, rgba(248,248,245,.7) 55%, transparent 100%);}
-.truss::after{content:''; position:absolute; left:0; right:0; top:62%; height:2px; background:rgba(30,31,34,.12);}
-/* 측면 구조 라인 (얇은 철골 느낌) */
-.scene .col{position:absolute; top:0; bottom:26vh; width:6px; background:rgba(30,31,34,.07);}
-.scene .col.l{left:4vw;} .scene .col.r{right:4vw;}
-/* 자연광 빛기둥 (천창에서 떨어지는 햇빛) */
-.shaft{position:absolute; top:-4vh; width:24vw; height:92vh; pointer-events:none;
-  background:linear-gradient(180deg, rgba(255,252,240,.85), rgba(255,250,235,.25) 55%, transparent);
-  clip-path:polygon(36% 0%, 64% 0%, 100% 100%, 0% 100%); filter:blur(6px); mix-blend-mode:soft-light;}
-.shaft.s1{left:8vw; transform:skewX(-8deg);}
-.shaft.s2{left:38vw; width:30vw; opacity:.9;}
-.shaft.s3{right:6vw; transform:skewX(8deg); opacity:.8;}
+  background:#F5F5F2 url('./assets/bg.jpg') center 38%/cover no-repeat;}
+/* 화이트 워시 — 사진 위 보드가 주인공이 되도록 */
+.scene::before{content:''; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, rgba(248,248,245,.62) 0%, rgba(245,245,242,.4) 45%, rgba(240,240,236,.55) 100%);}
 /* 부유 먼지 (햇빛 속) */
-.dust{position:absolute; border-radius:50%; background:rgba(255,255,250,.85); pointer-events:none;
+.dust{position:absolute; z-index:2; border-radius:50%; background:rgba(255,255,250,.85); pointer-events:none;
   box-shadow:0 0 4px rgba(255,255,250,.5);}
 @keyframes drift{0%{transform:translate(0,0);}50%{transform:translate(2.2vw,-3.5vh);}100%{transform:translate(0,0);}}
 
@@ -112,9 +99,6 @@ footer{position:relative; z-index:30; text-align:center; padding:26px 20px 24px;
 </nav>
 
 <div class="scene">
-  <div class="truss"></div>
-  <div class="col l"></div><div class="col r"></div>
-  <div class="shaft s1"></div><div class="shaft s2"></div><div class="shaft s3"></div>
   <div id="dust"></div>
 
   <div class="board-wrap"><div class="board"><div class="bezel"><div class="grid" id="grid"></div></div></div></div>
