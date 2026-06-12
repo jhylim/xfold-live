@@ -60,8 +60,9 @@ body::after{
   perspective:130px;
 }
 .cell.kr{font-family:'Pretendard'; font-weight:700;}
-.cell::after{content:''; position:absolute; left:0; right:0; top:50%; height:2px;
-  background:var(--hinge); transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,.045);}
+.cell::after{content:''; position:absolute; left:0; right:0; top:50%; height:var(--hingeH,2px);
+  background:var(--hinge); opacity:var(--hingeO,1); transform:translateY(-50%);
+  box-shadow:0 1px 0 rgba(255,255,255,.045);}
 .cell.flip-anim{animation:ff .12s ease-in;}
 @keyframes ff{0%{transform:rotateX(0);}49%{transform:rotateX(-86deg);filter:brightness(.5);}51%{transform:rotateX(86deg);filter:brightness(.5);}100%{transform:rotateX(0);}}
 .cell.amber{color:var(--amber);} .cell.up{color:var(--up);}
@@ -133,6 +134,10 @@ function sizeCells() {
   r.style.setProperty('--cw', cw + 'px');
   r.style.setProperty('--chh', Math.round(cw * 1.34) + 'px');
   r.style.setProperty('--cf', Math.round(cw * 0.72) + 'px');
+  /* 경첩선: 셀 크기에 비례 — 작은 셀에서는 얇고 옅게 (가독성) */
+  const hh = Math.max(1, Math.round(cw * 0.045));
+  r.style.setProperty('--hingeH', hh + 'px');
+  r.style.setProperty('--hingeO', cw < 22 ? '.45' : (cw < 34 ? '.7' : '1'));
 }
 function click() {
   try {
