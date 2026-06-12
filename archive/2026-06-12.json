@@ -1,0 +1,31 @@
+{
+ "brand": "XFOLD LIVE",
+ "owner": "XFOLD",
+ "tagline": "AI가 매일 박제하는 진짜 수익률",
+ "as_of": "2026-06-12",
+ "season": "PRE-SEASON",
+ "season_note": "시뮬 검증 구간 — KIS 모의계좌 연동 후 SEASON 1 시작",
+ "total_return_pct": -1.39,
+ "total_note": "누적 실현손익 기준 (거래 로그 재계산) · 정합 점검 중",
+ "avg_open_return_pct": null,
+ "slots": 5,
+ "positions": [],
+ "decisions_today": [
+  {
+   "time": "08:30",
+   "action": "관망",
+   "note": "매수 가능 0건 · 청산 관찰 4건 · 현금 파킹 100%"
+  },
+  {
+   "time": "12:30",
+   "action": "관망",
+   "note": "중간 점검 · 매수 가능 0건 · 청산 관찰 4건"
+  },
+  {
+   "time": "15:40",
+   "action": "박제",
+   "note": "장 마감 · 오늘의 보드 기록 확정"
+  }
+ ],
+ "disclaimer": "본 전광판의 데이터와 AI 분석은 확률적 결과물이며, 최종 투자의 책임은 사용자 본인에게 있습니다."
+}

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>XFOLD LIVE — AI 트랙레코드</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --flap-hi:#34363C; --flap-lo:#17181B; --hinge:#040405;
+  --txt:#F6F6F0; --amber:#FFC542; --dim:#6E7077;
+  --up:#FF6157; --down:#5B9DFF; --flat:#9FA1A7;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Pretendard',-apple-system,sans-serif; background:#F5F5F2; overflow-x:hidden;}
+
+/* ════════ 시네마 레이어 (라이트) ════════ */
+body::before{
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:80; opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(4) infinite;
+}
+@keyframes grain{0%{transform:translate(0,0);}25%{transform:translate(-4%,3%);}50%{transform:translate(3%,-4%);}75%{transform:translate(-2%,-2%);}100%{transform:translate(0,0);}}
+body::after{
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:79;
+  background:radial-gradient(ellipse 135% 100% at 50% 40%, transparent 58%, rgba(40,40,38,.10) 100%);
+}
+.nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; justify-content:space-between; padding:22px 30px;}
+.nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
+.nav a:hover{color:#0A0A0A;}
+
+/* ════════ 장면: 화이트 인더스트리얼 갤러리 (애플스토어 톤) ════════ */
+.scene{position:relative; width:100vw; height:100vh; min-height:720px; overflow:hidden;
+  background:linear-gradient(180deg,#FCFCFA 0%,#F7F7F4 52%,#F2F2EE 74%,#E3E3DE 74.3%,#D9D9D3 100%);}
+/* 천창 (스카이라이트 그리드 — 인더스트리얼) */
+.truss{position:absolute; top:0; left:-3%; right:-3%; height:9vh;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 10vw, rgba(30,31,34,.16) 10vw calc(10vw + 8px)),
+    linear-gradient(180deg, rgba(238,240,238,1) 0%, rgba(248,248,245,.7) 55%, transparent 100%);}
+.truss::after{content:''; position:absolute; left:0; right:0; top:62%; height:2px; background:rgba(30,31,34,.12);}
+/* 측면 구조 라인 (얇은 철골 느낌) */
+.scene .col{position:absolute; top:0; bottom:26vh; width:6px; background:rgba(30,31,34,.07);}
+.scene .col.l{left:4vw;} .scene .col.r{right:4vw;}
+/* 자연광 빛기둥 (천창에서 떨어지는 햇빛) */
+.shaft{position:absolute; top:-4vh; width:24vw; height:92vh; pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,252,240,.85), rgba(255,250,235,.25) 55%, transparent);
+  clip-path:polygon(36% 0%, 64% 0%, 100% 100%, 0% 100%); filter:blur(6px); mix-blend-mode:soft-light;}
+.shaft.s1{left:8vw; transform:skewX(-8deg);}
+.shaft.s2{left:38vw; width:30vw; opacity:.9;}
+.shaft.s3{right:6vw; transform:skewX(8deg); opacity:.8;}
+/* 부유 먼지 (햇빛 속) */
+.dust{position:absolute; border-radius:50%; background:rgba(255,255,250,.85); pointer-events:none;
+  box-shadow:0 0 4px rgba(255,255,250,.5);}
+@keyframes drift{0%{transform:translate(0,0);}50%{transform:translate(2.2vw,-3.5vh);}100%{transform:translate(0,0);}}
+
+/* ════════ 보드 (벽면) ════════ */
+.board-wrap{position:absolute; left:50%; top:10vh; transform:translateX(-50%); z-index:10; width:min(84vw,1480px);}
+.board{background:#0A0B0D; border-radius:12px; padding:12px;
+  box-shadow:0 46px 90px -30px rgba(20,20,22,.5), 0 14px 34px rgba(20,20,22,.22), inset 0 1px 0 rgba(255,255,255,.06);}
+.bezel{background:#101114; border-radius:7px; padding:1.5vw 1.3vw;
+  box-shadow:inset 0 3px 16px rgba(0,0,0,.7);}
+.grid{display:flex; flex-direction:column; gap:0.48vh;}
+.frow{display:flex; gap:3px;}
+.frow.gap-above{margin-top:1.4vh;}
+.cell{
+  font-family:'JetBrains Mono',monospace; font-weight:800;
+  width:var(--cw); height:var(--chh); line-height:var(--chh);
+  font-size:var(--cf); text-align:center; color:var(--txt);
+  background:linear-gradient(180deg,var(--flap-hi) 0%,#26282D 46%,#121316 50%,var(--flap-lo) 54%,#222428 100%);
+  border-radius:4px; position:relative; overflow:hidden; flex:none;
+  box-shadow:0 2px 3px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.09);
+  perspective:130px;
+}
+.cell.kr{font-family:'Pretendard'; font-weight:700;}
+.cell::after{content:''; position:absolute; left:0; right:0; top:50%; height:2px;
+  background:var(--hinge); transform:translateY(-1px); box-shadow:0 1px 0 rgba(255,255,255,.045);}
+.cell.flip-anim{animation:ff .12s ease-in;}
+@keyframes ff{0%{transform:rotateX(0);}49%{transform:rotateX(-86deg);filter:brightness(.5);}51%{transform:rotateX(86deg);filter:brightness(.5);}100%{transform:rotateX(0);}}
+.cell.amber{color:var(--amber);} .cell.up{color:var(--up);}
+.cell.down{color:var(--down);} .cell.flat{color:var(--flat);} .cell.dim{color:#4E5056;}
+
+/* 바닥 반사 (밝은 폴리시드 콘크리트 위 어두운 보드) */
+.reflection{position:absolute; left:50%; transform:translateX(-50%) scaleY(-1); z-index:3;
+  width:min(84vw,1480px); opacity:.07; filter:blur(5px) saturate(.7); pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg, transparent 34%, rgba(0,0,0,.9) 100%);
+  mask-image:linear-gradient(180deg, transparent 34%, rgba(0,0,0,.9) 100%);}
+/* 바닥 광택 */
+.floor-sheen{position:absolute; left:0; right:0; bottom:0; height:26vh; z-index:2;
+  background:linear-gradient(180deg, rgba(255,255,252,.5), transparent 50%);}
+
+footer{position:relative; z-index:30; text-align:center; padding:26px 20px 24px;
+  color:#9C9C96; font-size:10.5px; letter-spacing:0.06em; line-height:1.8; background:#F0F0EC;}
+.sound{position:fixed; right:16px; bottom:14px; z-index:95; background:rgba(255,255,255,.9); border:1px solid #E0E0DA;
+  border-radius:18px; padding:7px 13px; font-size:11px; color:#6B7280; cursor:pointer; user-select:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);}
+@media (max-width:760px){
+  .scene{min-height:560px;}
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="#">XFOLD LIVE</a>
+  <div style="display:flex;gap:26px;">
+    <a href="#" style="color:#0A0A0A;">LIVE</a>
+    <a href="./chart.html">CHART</a>
+    <a href="./archive.html">LEDGER</a>
+    <a href="./method.html">METHOD</a>
+    <a href="./about.html">ABOUT</a>
+  </div>
+</nav>
+
+<div class="scene">
+  <div class="truss"></div>
+  <div class="col l"></div><div class="col r"></div>
+  <div class="shaft s1"></div><div class="shaft s2"></div><div class="shaft s3"></div>
+  <div id="dust"></div>
+
+  <div class="board-wrap"><div class="board"><div class="bezel"><div class="grid" id="grid"></div></div></div></div>
+  <div class="reflection" id="reflection"></div>
+  <div class="floor-sheen"></div>
+
+</div>
+
+<footer>본 전광판의 데이터와 AI 분석은 확률적 결과물이며, 최종 투자의 책임은 사용자 본인에게 있습니다.<br>투자 권유 아님 · 운용 기록의 공개 아카이브 · © 2026 XFOLD</footer>
+<div class="sound" id="sound">🔇 사운드</div>
+
+<script>
+/* ================= 보드 ================= */
+const COLS = 30;
+const CHARS = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.+-%·';
+let SOUND = false, actx;
+
+function sizeCells() {
+  const wrap = document.querySelector('.board-wrap');
+  const w = wrap.getBoundingClientRect().width;
+  const inner = w - 24 - (window.innerWidth * 0.026); // frame + bezel padding
+  const cw = Math.floor((inner - (COLS - 1) * 3) / COLS);
+  const r = document.documentElement;
+  r.style.setProperty('--cw', cw + 'px');
+  r.style.setProperty('--chh', Math.round(cw * 1.34) + 'px');
+  r.style.setProperty('--cf', Math.round(cw * 0.72) + 'px');
+}
+function click() {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'square'; o.frequency.value = 2200 + Math.random() * 900;
+    g.gain.setValueAtTime(0.013, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.024);
+    o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.03);
+  } catch (e) {}
+}
+document.getElementById('sound').onclick = function () {
+  SOUND = !SOUND; this.textContent = SOUND ? '🔊 사운드' : '🔇 사운드';
+};
+
+/* 첫 제스처에 사운드 자동 ON + 보드 촤르륵 물결 */
+let WOKE = false;
+function reflipWave() {
+  const cells = [...document.querySelectorAll('.cell')].filter(c => c.textContent.trim());
+  cells.forEach((c, i) => {
+    if (Math.random() < 0.55) spinTo(c, c.textContent, i * 14 + Math.random() * 200);
+  });
+}
+['pointerdown', 'keydown'].forEach(ev =>
+  window.addEventListener(ev, () => {
+    if (WOKE) return; WOKE = true;
+    SOUND = true;
+    document.getElementById('sound').textContent = '🔊 사운드';
+    reflipWave();
+  }, { once: true, capture: true }));
+function makeRow(segments, opts = {}) {
+  let left = '', leftCls = [];
+  segments.filter(s => !s.right).forEach(s => {
+    [...s.t].forEach(ch => { left += ch; leftCls.push(s.c || ''); });
+    left += ' '; leftCls.push('');
+  });
+  let right = '', rightCls = [];
+  segments.filter(s => s.right).forEach(s => {
+    [...s.t].forEach(ch => { right += ch; rightCls.push(s.c || ''); });
+  });
+  const padLen = COLS - left.length - right.length;
+  const chars = [...left, ...' '.repeat(Math.max(0, padLen)), ...right];
+  const clss  = [...leftCls, ...Array(Math.max(0, padLen)).fill(''), ...rightCls];
+  const row = document.createElement('div');
+  row.className = 'frow' + (opts.gapAbove ? ' gap-above' : '');
+  chars.slice(0, COLS).forEach((ch, i) => {
+    const c = document.createElement('span');
+    c.className = 'cell' + (/[가-힣]/.test(ch) ? ' kr' : '') + (clss[i] ? ' ' + clss[i] : '');
+    c.textContent = ' ';
+    row.appendChild(c);
+    if (ch !== ' ') spinTo(c, ch, 150 + i * 26 + Math.random() * 260);
+  });
+  return row;
+}
+function spinTo(el, target, delay) {
+  setTimeout(() => {
+    let hops = /[가-힣]/.test(target) ? 3 : 4 + Math.floor(Math.random() * 5);
+    const iv = setInterval(() => {
+      hops--;
+      el.classList.remove('flip-anim'); void el.offsetWidth; el.classList.add('flip-anim');
+      el.textContent = hops <= 0 ? target : CHARS[1 + Math.floor(Math.random() * (CHARS.length - 1))];
+      if (SOUND) click();
+      if (hops <= 0) clearInterval(iv);
+    }, 70);
+  }, delay);
+}
+const blankRow = () => makeRow([{ t: '' }]);
+function retSeg(p, pad = 7) {
+  if (p === null || p === undefined) return { t: '--'.padStart(pad), c: 'dim', right: true };
+  const txt = ((p > 0 ? '+' : '') + p.toFixed(2) + '%').padStart(pad);
+  return { t: txt, c: Math.abs(p) < 0.005 ? 'flat' : (p > 0 ? 'up' : 'down'), right: true };
+}
+
+const FALLBACK = {"as_of":"2026-06-12","season":"PRE-SEASON","total_return_pct":-1.39,
+  "avg_open_return_pct":null,"slots":5,"positions":[]};
+
+async function load() {
+  let d = FALLBACK;
+  try { const r = await fetch('./data/board.json', { cache: 'no-store' }); if (r.ok) d = await r.json(); } catch (e) {}
+  sizeCells();
+  const g = document.getElementById('grid');
+  g.appendChild(makeRow([{ t: 'XFOLD LIVE', c: 'amber' }, { t: d.season || '', c: 'amber', right: true }]));
+  g.appendChild(makeRow([{ t: 'DAILY PROOF BOARD' }, { t: d.as_of || '', c: 'flat', right: true }]));
+  g.appendChild(makeRow([{ t: 'ACTIVE POSITIONS', c: 'amber' }], { gapAbove: true }));
+  (d.positions || []).forEach(p => {
+    g.appendChild(makeRow([{ t: p.code }, { t: p.name },
+      retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]));
+  });
+  for (let i = (d.positions || []).length; i < (d.slots || 5); i++) g.appendChild(blankRow());
+  const avg = (typeof d.avg_open_return_pct === 'number') ? d.avg_open_return_pct
+            : ((d.positions || []).length ? d.positions.reduce((s, p) => s + (p.return_pct || 0), 0) / d.positions.length : null);
+  g.appendChild(makeRow([{ t: '현재 평균 수익률', c: 'amber' }, retSeg(avg, 8)], { gapAbove: true }));
+  g.appendChild(makeRow([{ t: '누적 수익률', c: 'amber' }, retSeg(d.total_return_pct || 0, 8)]));
+
+  /* 바닥 반사: 보드 완성 후 복제 */
+  setTimeout(() => {
+    const ref = document.getElementById('reflection');
+    ref.innerHTML = '';
+    const clone = document.querySelector('.board').cloneNode(true);
+    ref.appendChild(clone);
+    const bw = document.querySelector('.board-wrap').getBoundingClientRect();
+    ref.style.top = (bw.bottom + window.scrollY - 6) + 'px';
+  }, 5200);
+}
+load();
+window.addEventListener('resize', sizeCells);
+
+/* 보드 3D 틸트 — 마우스 따라 살짝 기울어짐 */
+(() => {
+  const wrap = document.querySelector('.board-wrap');
+  const board = wrap.querySelector('.board');
+  board.style.transition = 'transform .18s ease-out';
+  board.style.willChange = 'transform';
+  let raf = null;
+  window.addEventListener('mousemove', e => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const nx = e.clientX / window.innerWidth - 0.5;   // -0.5 ~ 0.5
+      const ny = e.clientY / window.innerHeight - 0.5;
+      board.style.transform =
+        `perspective(1600px) rotateY(${nx * 3.2}deg) rotateX(${ny * -2.2}deg) translateZ(0)`;
+    });
+  });
+  window.addEventListener('mouseleave', () => { board.style.transform = ''; });
+})();
+
+/* 부유 먼지 */
+const dust = document.getElementById('dust');
+for (let i = 0; i < 26; i++) {
+  const s = document.createElement('div');
+  s.className = 'dust';
+  const sz = 1 + Math.random() * 2.4;
+  s.style.cssText = `width:${sz}px;height:${sz}px;left:${8 + Math.random() * 84}vw;top:${6 + Math.random() * 70}vh;
+    opacity:${0.25 + Math.random() * 0.5};animation:drift ${9 + Math.random() * 14}s ease-in-out ${-Math.random() * 12}s infinite;`;
+  dust.appendChild(s);
+}
+</script>
+</body>
+</html>

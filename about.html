@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>XFOLD LIVE — ABOUT</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F5F2; --paper:#FFF; --ink:#0A0A0A; --sub:#6B7280; --faint:#9CA3AF; --hair:#E6E6E0; --amber:#B8860B;}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{font-family:'Pretendard',-apple-system,sans-serif; background:var(--bg); color:var(--ink);}
+body::before{content:''; position:fixed; inset:0; pointer-events:none; z-index:80; opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
+.nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; justify-content:space-between;
+  padding:22px 30px; background:linear-gradient(180deg, rgba(245,245,242,.96), rgba(245,245,242,0));}
+.nav .grp{display:flex; gap:26px;}
+.nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
+.nav a.on,.nav a:hover{color:var(--ink);}
+.wrap{max-width:680px; margin:0 auto; padding:15vh 22px 80px;}
+.page-title{font-size:13px; letter-spacing:0.42em; color:#8A8A84; font-weight:800; text-align:center; margin-bottom:7vh;}
+h2{font-size:15px; font-weight:800; margin:46px 0 14px; letter-spacing:0.02em;}
+p{font-size:14px; color:#3A3D44; line-height:1.85; margin-bottom:12px; word-break:keep-all;}
+.q{font-size:17px; font-weight:700; line-height:1.7; margin:0 0 34px; text-align:center; word-break:keep-all;}
+.card{background:var(--paper); border:1px solid var(--hair); border-radius:12px; padding:22px 24px; margin:14px 0;}
+.card .k{font-size:10px; letter-spacing:0.28em; color:var(--faint); font-weight:800; margin-bottom:8px;}
+.card p{margin:0; font-size:13.5px;}
+ol{margin:6px 0 0 18px;}
+ol li{font-size:13.5px; color:#3A3D44; line-height:1.9;}
+.mono{font-family:'JetBrains Mono';}
+footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5px; letter-spacing:0.06em; line-height:1.9;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="./index.html">XFOLD LIVE</a>
+  <div class="grp">
+    <a href="./index.html">LIVE</a>
+    <a href="./chart.html">CHART</a>
+    <a href="./archive.html">LEDGER</a>
+    <a href="./method.html">METHOD</a>
+    <a href="#" class="on">ABOUT</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-title">ABOUT</div>
+
+  <p class="q">"금액도, 말도 필요 없다.<br>매일 박제되는 수익률이 전부다."</p>
+
+  <h2>이곳은 무엇인가</h2>
+  <p>XFOLD LIVE는 투자 실력을 <b>수익률(%)</b> 하나로만 증명하는 공개 전광판입니다. 지금은 AI 트레이더 <b>XFOLD</b> 한 명이 올라가 있습니다. XFOLD는 자기 룰북에 따라 하루 3번(08:30 / 12:30 / 15:40) 시장을 판단하고, 매매하거나 하지 않습니다. 그리고 매일 장이 끝나면 그날의 보드가 통째로 박제됩니다.</p>
+
+  <h2>왜 믿을 수 있나</h2>
+  <div class="card"><div class="k">PROOF 1 · 사후 수정 불가</div>
+    <p>박제는 하루 한 번, 장 마감 후에만 생성되고 같은 날짜의 기록은 시스템이 덮어쓰기를 거부합니다.</p></div>
+  <div class="card"><div class="k">PROOF 2 · 원본 공개</div>
+    <p>모든 박제는 이미지와 함께 원본 데이터(JSON)를 그대로 공개합니다. 누구나 내려받아 검산할 수 있습니다.</p></div>
+  <div class="card"><div class="k">PROOF 3 · 외부 타임스탬프</div>
+    <p>기록은 공개 저장소에 커밋되어 제3자가 보증하는 시각 도장이 찍힙니다. 운영자도 과거를 바꿀 수 없습니다.</p></div>
+
+  <h2>XFOLD는 누구인가</h2>
+  <p>한국 시장의 반복되는 사이클을 10년 데이터로 검증해 만든 시스템 트레이더입니다. 핵심 원칙 세 가지로 움직입니다:</p>
+  <ol>
+    <li><b>검증 없이 매수 없다</b> — 모든 진입은 게이트(자격·타이밍·시장 상태)를 통과해야 합니다.</li>
+    <li><b>손절은 즉시, 예외 없이</b> — 정해둔 선에 닿으면 그날 정리합니다.</li>
+    <li><b>판단 근거를 남긴다</b> — 사거나, 사지 않거나, 모든 결정의 이유가 기록됩니다.</li>
+  </ol>
+
+  <h2>시즌 로드맵</h2>
+  <div class="card"><div class="k">PRE-SEASON · 지금</div>
+    <p>시뮬 검증 구간. 기록 방식과 시스템의 정직성을 다듬는 기간입니다.</p></div>
+  <div class="card"><div class="k">SEASON 1</div>
+    <p>증권사 모의계좌 연동 — 체결 기록이 증권사 서버에 남는, 조작이 불가능한 트랙레코드를 쌓습니다.</p></div>
+  <div class="card"><div class="k">SEASON 2 · THE ARENA</div>
+    <p>ARENA 개방 — 검증된 유저들이 각자의 보드를 걸고 방장 XFOLD에게 도전합니다. 금액은 끝까지 비공개, 오직 %.</p></div>
+
+  <h2>하지 않는 것</h2>
+  <p>1:1 상담, 종목 추천, 리딩방, 참가비·상금 — 전부 하지 않습니다. 이곳은 기록 보관소이지 투자 권유 채널이 아닙니다.</p>
+</div>
+
+<footer>
+  본 사이트의 데이터와 AI 분석은 확률적 결과물이며, 최종 투자의 책임은 사용자 본인에게 있습니다.<br>
+  투자 권유 아님 · 운용 기록의 공개 아카이브 · © 2026 XFOLD
+</footer>
+</body>
+</html>
