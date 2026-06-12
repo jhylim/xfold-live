@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>XFOLD LIVE — THE LEDGER · 박제 장부</title>
+<title>XFOLD LIVE — THE LEDGER · 기록 장부</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -114,7 +114,7 @@ footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5p
 
 <div class="wrap">
   <div class="page-title">THE LEDGER</div>
-  <div class="page-sub">매일 장 마감, 그날의 보드가 여기 박제된다 — 사후 수정 불가</div>
+  <div class="page-sub">매일 장 마감, 그날의 보드가 여기에 기록됩니다 — 한 번 쓰이면 고칠 수 없습니다</div>
 
   <div class="panel chartcard"><div class="inner">
     <div class="ptitle">CUMULATIVE RETURN — 누적 수익률 추이</div>
@@ -126,13 +126,13 @@ footer{text-align:center; padding:48px 20px 36px; color:#9C9C96; font-size:10.5p
     <div class="l-head">
       <span>날짜</span><span>그날의 판단</span><span>누적</span><span>일간</span><span>보유</span><span></span>
     </div>
-    <div id="rows"><div class="empty">첫 박제를 기다리는 중…</div></div>
+    <div id="rows"><div class="empty">첫 기록을 기다리는 중…</div></div>
   </div></div>
 </div>
 
 <footer>
   본 장부의 데이터와 AI 분석은 확률적 결과물이며, 최종 투자의 책임은 사용자 본인에게 있습니다.<br>
-  투자 권유 아님 · 운용 기록의 공개 아카이브 · 박제 후 수정 불가 · © 2026 XFOLD
+  투자 권유 아님 · 운용 기록의 공개 아카이브 · 기록 후 수정 불가 · © 2026 XFOLD
 </footer>
 
 <script>
@@ -197,7 +197,7 @@ async function toggle(item, date) {
   const calls = (d.decisions_today || []).map(c =>
     `<div class="d-call"><span class="t">${c.time}</span><span class="a">${c.action}</span><span class="n">${c.note}</span></div>`).join('');
   det.innerHTML = `
-    <img loading="lazy" src="./archive/${date}.png" alt="${date} 박제 보드">
+    <img loading="lazy" src="./archive/${date}.png" alt="${date} 기록 보드">
     <div class="d-calls">
       <div class="lab" style="font-size:10px;letter-spacing:0.3em;color:#FFC542;font-weight:800;margin-bottom:6px;font-family:'JetBrains Mono';">그날 XFOLD의 판단 (하루 3회)</div>
       ${calls || '<div class="d-call"><span class="n">기록 없음</span></div>'}

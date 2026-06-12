@@ -108,7 +108,7 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 .gate-row.fail .k{color:var(--dim);}
 .gate-verdict{margin-top:13px; font-family:'JetBrains Mono'; font-size:11px; font-weight:800; letter-spacing:0.2em; color:var(--amber);}
 
-/* SEALED PRICES — 박제 가격표 */
+/* SEALED PRICES — 신호 시점 가격표 */
 .seal-row{display:flex; justify-content:space-between; align-items:center; padding:10px 2px; border-bottom:1px solid var(--hairD);}
 .seal-row:last-child{border-bottom:0;}
 .seal-row .lbl{font-size:12.5px; color:var(--flat); display:flex; align-items:center; gap:9px;}
@@ -165,7 +165,7 @@ footer{position:relative; z-index:10; text-align:center; padding:26px 20px 30px;
     <div class="panel" id="orderPanel" style="display:none;"><div class="inner">
       <div class="ptitle">TODAY — 오늘의 집행 가이드 <span class="sub" id="orderMeta"></span></div>
       <div id="orderRows"></div>
-      <div class="plan-fine">아래 박제 가격표는 신호 시점의 계획이며 수정되지 않는다.<br>이 가이드는 현재 단계 판단에 따른 오늘의 집행 — 둘은 구분해 기록된다.
+      <div class="plan-fine">아래 가격표는 신호 시점에 기록된 계획이며, 사후에 바꾸지 않습니다.<br>이 가이드는 현재 시장 단계에 따른 오늘의 집행입니다 — 둘은 구분해서 기록됩니다.
         <a href="./about.html#theq" style="color:#FFC542;text-decoration:none;font-weight:700;"> 왜? →</a></div>
     </div></div>
 
@@ -188,9 +188,9 @@ footer{position:relative; z-index:10; text-align:center; padding:26px 20px 30px;
       </div></div>
 
       <div class="panel"><div class="inner">
-        <div class="ptitle">SEALED PRICES — 박제 가격표 <span class="sub" id="sealMeta"></span></div>
+        <div class="ptitle">SEALED PRICES — 신호 시점 가격표 <span class="sub" id="sealMeta"></span></div>
         <div id="seals"></div>
-        <div class="seal-note">모든 가격은 신호 시점에 박제되며 사후 수정되지 않는다.<br>수정이 불가피한 특별한 경우에만 사유와 함께 <b>2차 박제</b>로 버전이 남는다.</div>
+        <div class="seal-note">모든 가격은 신호가 나온 순간 기록되며, 그 뒤로 바꾸지 않습니다.<br>수정이 불가피한 특별한 경우에만 사유와 함께 <b>2차 기록</b>으로 버전이 남습니다.</div>
       </div></div>
 
       <div class="panel"><div class="inner">
@@ -300,7 +300,7 @@ async function select(ticker, push){
     (pos ? `<span class="hb-ret ${retClass(pos.return_pct)}">${retTxt(pos.return_pct)}</span>` : '') +
     `<span class="hb-meta">` +
     `<span class="hb-tag${stopped ? ' stop' : ''}">${stopped ? '⛔ 청산' : (pos ? 'ACTIVE' : (d.status || 'WATCH'))}</span>` +
-    `<span class="hb-tag">${d.version || 1}차 박제 · ${d.signal_date || '—'}</span>` +
+    `<span class="hb-tag">${d.version || 1}차 기록 · ${d.signal_date || '—'}</span>` +
     (last ? `<span class="hb-sub">종가 ${fmt(last.value)} · ${last.time}</span>` : '') +
     `</span>`;
 
@@ -333,7 +333,7 @@ async function select(ticker, push){
   if (d.signal_date) {
     try {
       SERIES.setMarkers([{ time: d.signal_date, position: 'belowBar', color: '#FFC542',
-        shape: 'arrowUp', text: '박제 ' + (d.version || 1) + '차' }]);
+        shape: 'arrowUp', text: (d.version || 1) + '차 기록' }]);
     } catch(e) {}
   }
   CHART.timeScale().fitContent();
@@ -357,7 +357,7 @@ async function select(ticker, push){
   } else if (od && od.side === 'BUY') {
     op.style.display = '';
     $('orderMeta').textContent = '매수';
-    orw.innerHTML = `<div class="gate-verdict" style="margin:0;">BUY — ${od.reason || ''} (박제 가격표 기준 분할 진입)</div>`;
+    orw.innerHTML = `<div class="gate-verdict" style="margin:0;">BUY — ${od.reason || ''} (신호 시점 가격표 기준 분할 진입)</div>`;
   } else {
     op.style.display = 'none';
   }
@@ -373,9 +373,9 @@ async function select(ticker, push){
   $('verdict').textContent = stopped ? 'VERDICT — STOPPED (손절 집행 완료, 재진입은 게이트 재통과 시)' :
     (r.verdict ? `VERDICT — ${r.verdict}${r.verdict === 'WAIT' ? ' (조건 미충족 구간, 신규 진입 보류)' : ''}` : '');
 
-  /* 박제 가격표 — 매도 집행 중이면 익절 사다리는 흐리게 (계획은 보존, 집행은 TODAY 우선) */
+  /* 신호 시점 가격표 — 매도 집행 중이면 익절 사다리는 흐리게 (계획은 보존, 집행은 TODAY 우선) */
   const selling = od && od.side === 'SELL';
-  $('sealMeta').textContent = (d.version || 1) + '차 박제 · ' + (d.signal_date || '');
+  $('sealMeta').textContent = (d.version || 1) + '차 기록 · ' + (d.signal_date || '');
   const sl = $('seals'); sl.innerHTML = '';
   (d.levels || []).forEach(lv => {
     const isTarget = (lv.label || '').includes('익절');

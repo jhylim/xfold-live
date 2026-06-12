@@ -66,12 +66,12 @@ action = '매수' if n_go > 0 else '관망'
 decisions = [
     {'time': '08:30', 'action': action, 'note': f'{base_note} · {park_note}'},
     {'time': '12:30', 'action': action, 'note': f'중간 점검 · {base_note}'},
-    {'time': '15:40', 'action': '박제', 'note': '장 마감 · 오늘의 보드 기록 확정'},
+    {'time': '15:40', 'action': '기록', 'note': '장 마감 · 오늘의 보드 기록 확정'},
 ]
 
 out = {
     'brand': 'XFOLD LIVE', 'owner': 'XFOLD',
-    'tagline': 'AI가 매일 박제하는 진짜 수익률',
+    'tagline': 'AI가 매일 기록하는 진짜 수익률',
     'as_of': datetime.now().strftime('%Y-%m-%d'),
     'season': 'PRE-SEASON',
     'season_note': '시뮬 검증 구간 — KIS 모의계좌 연동 후 SEASON 1 시작',
@@ -152,7 +152,7 @@ def build_charts():
                     f"과거 사이클 평균 +{mb.get('avg_ret_pct', '-')}% · 최고 +{mb.get('best_ret_pct', '-')}% · "
                     f"평균 보유 {mb.get('avg_hold', '-')}일.")
         if sd:
-            call += f" {sd} 신호 시점에 매수·목표·손절가가 박제되었다."
+            call += f" {sd} 신호 시점에 매수·목표·손절가가 기록되었다."
         rationale = {'engine': 'CYCLE', 'stage': stage, 'verdict': g.get('verdict'),
                      'call': call.strip(), 'checks': checks,
                      'weight_pct': 20,
