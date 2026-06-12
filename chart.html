@@ -71,6 +71,10 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 
 /* ─ 본문 그리드 ─ */
 .main{display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px;}
+/* 창 축소 시 차트 캔버스가 그리드 트랙을 물고 늘어지지 않게 (grid blowout 방지) */
+.main > .panel, .rgrid > .panel{min-width:0; max-width:100%;}
+.panel .inner{min-width:0;}
+#chart{max-width:100%;}
 
 /* 다크 패널 공통 (보드 베젤 언어) */
 .panel{background:var(--panel); border-radius:10px; padding:9px;
