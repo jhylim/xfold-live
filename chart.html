@@ -85,10 +85,13 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 
 /* 차트 */
 #chart{height:430px; border-radius:4px; overflow:hidden;}
-.legend{display:flex; flex-wrap:wrap; gap:7px 14px; margin-top:12px;}
-.lg{font-family:'JetBrains Mono'; font-size:10px; font-weight:700; letter-spacing:0.04em; color:var(--flat);
-  display:flex; align-items:center; gap:6px;}
+.legend{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px;}
+.lg{font-family:'JetBrains Mono'; font-size:10px; font-weight:700; letter-spacing:0.04em; color:var(--txt);
+  display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+  border:1px solid rgba(255,255,255,.16); border-radius:14px; padding:5px 11px; transition:opacity .15s;}
 .lg i{width:14px; height:2px; display:inline-block;}
+.lg.off{opacity:.32; border-color:var(--hairD);}
+.lg:hover{border-color:rgba(255,255,255,.4);}
 
 /* 근거 그리드 */
 .rgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
@@ -322,12 +325,46 @@ async function select(ticker, push){
     priceLineVisible: false,
   });
   SERIES.setData(d.data || []);
+
+  /* 가격선 그룹 토글 — 선이 많으면 읽기 어려우니 필요한 것만 켠다 */
+  const GROUP_OF = l => /매수/.test(l) ? '매수 1·2·3차'
+                      : /평단/.test(l) ? '평단'
+                      : /손절/.test(l) ? '손절'
+                      : /1차 익절/.test(l) ? '1차 익절'
+                      : '2·3차 익절';
+  const DEFAULTS = { '매수 1·2·3차': false, '평단': true, '손절': true, '1차 익절': true, '2·3차 익절': false };
+  let lineState;
+  try { lineState = { ...DEFAULTS, ...JSON.parse(localStorage.getItem('xfold_lines') || '{}') }; }
+  catch (e) { lineState = { ...DEFAULTS }; }
+  const drawn = {};   // group -> [priceLine]
+  const groups = {};  // group -> [level]
+  (d.levels || []).forEach(lv => { (groups[GROUP_OF(lv.label)] = groups[GROUP_OF(lv.label)] || []).push(lv); });
+
+  function applyGroup(gname) {
+    (drawn[gname] || []).forEach(pl => { try { SERIES.removePriceLine(pl); } catch (e) {} });
+    drawn[gname] = [];
+    if (lineState[gname]) {
+      (groups[gname] || []).forEach(lv => {
+        drawn[gname].push(SERIES.createPriceLine({ price: lv.price, color: lv.color, lineWidth: 1,
+          lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: lv.label }));
+      });
+    }
+  }
+
   const lg = $('legend'); lg.innerHTML = '';
-  (d.levels || []).forEach(lv => {
-    SERIES.createPriceLine({ price: lv.price, color: lv.color, lineWidth: 1,
-      lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: lv.label });
-    const e = document.createElement('span'); e.className = 'lg';
-    e.innerHTML = `<i style="background:${lv.color}"></i>${lv.label} ${fmt(lv.price)}`;
+  Object.keys(groups).forEach(gname => {
+    applyGroup(gname);
+    const reps = groups[gname];
+    const e = document.createElement('span');
+    e.className = 'lg' + (lineState[gname] ? '' : ' off');
+    e.innerHTML = `<i style="background:${reps[0].color}"></i>${gname}` +
+      (reps.length === 1 ? ` ${fmt(reps[0].price)}` : '');
+    e.onclick = () => {
+      lineState[gname] = !lineState[gname];
+      localStorage.setItem('xfold_lines', JSON.stringify(lineState));
+      e.classList.toggle('off', !lineState[gname]);
+      applyGroup(gname);
+    };
     lg.appendChild(e);
   });
   if (d.signal_date) {
