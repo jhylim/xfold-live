@@ -49,6 +49,10 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 .chip.on .kr{color:var(--amber);}
 .chip.stopped{opacity:.45;} .chip.stopped .kr{text-decoration:line-through;}
 .chip:hover{filter:brightness(1.25);}
+/* 칩 글자 플립 (보드와 동일한 연출, 소형) */
+.fch{display:inline-block; backface-visibility:hidden;}
+.fch.fa{animation:chipff .12s ease-in;}
+@keyframes chipff{0%{transform:rotateX(0);}49%{transform:rotateX(-86deg);filter:brightness(.5);}51%{transform:rotateX(86deg);filter:brightness(.5);}100%{transform:rotateX(0);}}
 
 /* ─ 헤더 스트립: 선택 종목 (전광판 한 줄) ─ */
 .head-board{background:var(--panel); border-radius:10px; padding:9px;
@@ -236,6 +240,9 @@ function boardPos(ticker){
   return (BOARD && BOARD.positions || []).find(p => p.code === code) || null;
 }
 
+const CHIPCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.+-%';
+const sp = txt => [...txt].map(ch => `<span class="fch">${ch}</span>`).join('');
+
 function renderPicker(){
   const pk = $('picker'); pk.innerHTML = '';
   LIST.forEach(x => {
@@ -244,10 +251,31 @@ function renderPicker(){
     const el = document.createElement('div');
     el.className = 'chip' + (stopped ? ' stopped' : '') + (pos ? ' ' + retClass(pos.return_pct) : '');
     el.dataset.tk = x.ticker;
-    el.innerHTML = `${x.ticker.split('.')[0]}<span class="kr">${x.name}</span>` +
-      (pos ? `<span class="r">${retTxt(pos.return_pct)}</span>` : (stopped ? `<span class="r">⛔</span>` : ''));
+    el.innerHTML = sp(x.ticker.split('.')[0]) + `<span class="kr">${sp(x.name)}</span>` +
+      (pos ? `<span class="r">${sp(retTxt(pos.return_pct))}</span>` : (stopped ? `<span class="r">⛔</span>` : ''));
     el.onclick = () => select(x.ticker, true);
     pk.appendChild(el);
+  });
+  flipChips();
+}
+
+/* 새로고침 시 칩이 보드처럼 촤르륵 플립되며 채워짐 */
+function flipChips(){
+  document.querySelectorAll('.chip .fch').forEach((s, i) => {
+    const target = s.textContent;
+    if (target === ' ') return;
+    const isK = /[가-힣]/.test(target);
+    let hops = 2 + Math.floor(Math.random() * 3);
+    s.textContent = ' ';
+    setTimeout(() => {
+      const iv = setInterval(() => {
+        hops--;
+        s.classList.remove('fa'); void s.offsetWidth; s.classList.add('fa');
+        s.textContent = hops <= 0 ? target
+          : (isK ? target : CHIPCHARS[Math.floor(Math.random() * CHIPCHARS.length)]);
+        if (hops <= 0) clearInterval(iv);
+      }, 70);
+    }, 100 + i * 12 + Math.random() * 180);
   });
 }
 
