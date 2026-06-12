@@ -13,9 +13,8 @@
 *{box-sizing:border-box; margin:0; padding:0;}
 body{font-family:'Pretendard',-apple-system,sans-serif; background:var(--bg); color:var(--ink);}
 /* 공통 4K 배경 + 화이트 워시 */
-.bgphoto{position:fixed; inset:0; z-index:-2; background:url('./assets/bg.jpg') center 55%/cover no-repeat;}
-.bgwash{position:fixed; inset:0; z-index:-1;
-  background:linear-gradient(180deg, rgba(247,247,244,.9), rgba(243,243,239,.85));}
+.bgphoto{position:fixed; inset:0; z-index:-2; background:url('./assets/bg.jpg') center 42%/cover no-repeat;}
+.bgwash{position:fixed; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(247,247,244,.82), rgba(243,243,239,.76));}
 body::before{content:''; position:fixed; inset:0; pointer-events:none; z-index:80; opacity:.025;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");}
 .nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; justify-content:space-between;

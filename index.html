@@ -31,12 +31,10 @@ body::after{
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a:hover{color:#0A0A0A;}
 
-/* ════════ 장면: 4K 갤러리 사진 (전 페이지 공통 배경) ════════ */
-.scene{position:relative; width:100vw; height:100vh; min-height:720px; overflow:hidden;
-  background:#F5F5F2 url('./assets/bg.jpg') center 55%/cover no-repeat;}
-/* 화이트 워시 — 사진 위 보드가 주인공이 되도록 */
-.scene::before{content:''; position:absolute; inset:0; z-index:1;
-  background:linear-gradient(180deg, rgba(248,248,245,.62) 0%, rgba(245,245,242,.4) 45%, rgba(240,240,236,.55) 100%);}
+/* ════════ 공통 4K 배경 + 화이트 워시 (전 페이지 동일) ════════ */
+.bgphoto{position:fixed; inset:0; z-index:-2; background:url('./assets/bg.jpg') center 42%/cover no-repeat;}
+.bgwash{position:fixed; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(247,247,244,.82), rgba(243,243,239,.76));}
+.scene{position:relative; width:100vw; height:100vh; min-height:720px; overflow:hidden;}
 /* 부유 먼지 (햇빛 속) */
 .dust{position:absolute; z-index:2; border-radius:50%; background:rgba(255,255,250,.85); pointer-events:none;
   box-shadow:0 0 4px rgba(255,255,250,.5);}
@@ -78,7 +76,7 @@ body::after{
   background:linear-gradient(180deg, rgba(255,255,252,.5), transparent 50%);}
 
 footer{position:relative; z-index:30; text-align:center; padding:26px 20px 24px;
-  color:#9C9C96; font-size:10.5px; letter-spacing:0.06em; line-height:1.8; background:#F0F0EC;}
+  color:#9C9C96; font-size:10.5px; letter-spacing:0.06em; line-height:1.8;}
 .sound{position:fixed; right:16px; bottom:14px; z-index:95; background:rgba(255,255,255,.9); border:1px solid #E0E0DA;
   border-radius:18px; padding:7px 13px; font-size:11px; color:#6B7280; cursor:pointer; user-select:none;
   box-shadow:0 2px 8px rgba(0,0,0,.05);}
@@ -98,6 +96,7 @@ footer{position:relative; z-index:30; text-align:center; padding:26px 20px 24px;
   </div>
 </nav>
 
+<div class="bgphoto"></div><div class="bgwash"></div>
 <div class="scene">
   <div id="dust"></div>
 
