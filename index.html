@@ -225,12 +225,28 @@ async function load() {
   const g = document.getElementById('grid');
   g.appendChild(makeRow([{ t: 'XFOLD LIVE', c: 'amber' }, { t: d.season || '', c: 'amber', right: true }]));
   g.appendChild(makeRow([{ t: 'DAILY PROOF BOARD' }, { t: d.as_of || '', c: 'flat', right: true }]));
-  g.appendChild(makeRow([{ t: 'ACTIVE POSITIONS', c: 'amber' }], { gapAbove: true }));
-  (d.positions || []).forEach(p => {
-    g.appendChild(makeRow([{ t: p.code }, { t: p.name },
-      retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]));
-  });
-  for (let i = (d.positions || []).length; i < (d.slots || 5); i++) g.appendChild(blankRow());
+  /* 포지션 영역 — 한 장(슬롯 수)을 넘어가면 공항 전광판처럼 페이지 로테이션 */
+  const PAGE = d.slots || 5;
+  const pos = d.positions || [];
+  const pages = Math.max(1, Math.ceil(pos.length / PAGE));
+  const posBox = document.createElement('div');
+  posBox.style.display = 'contents';
+  let pageIdx = 0;
+  function showPage(idx) {
+    posBox.innerHTML = '';
+    const tag = pages > 1 ? `${idx + 1}/${pages}` : '';
+    posBox.appendChild(makeRow([{ t: 'ACTIVE POSITIONS', c: 'amber' },
+      { t: tag, c: 'flat', right: true }], { gapAbove: true }));
+    const slice = pos.slice(idx * PAGE, idx * PAGE + PAGE);
+    slice.forEach(p => {
+      posBox.appendChild(makeRow([{ t: p.code }, { t: p.name },
+        retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]));
+    });
+    for (let i = slice.length; i < PAGE; i++) posBox.appendChild(blankRow());
+  }
+  g.appendChild(posBox);
+  showPage(0);
+  if (pages > 1) setInterval(() => { pageIdx = (pageIdx + 1) % pages; showPage(pageIdx); }, 8000);
   const avg = (typeof d.avg_open_return_pct === 'number') ? d.avg_open_return_pct
             : ((d.positions || []).length ? d.positions.reduce((s, p) => s + (p.return_pct || 0), 0) / d.positions.length : null);
   g.appendChild(makeRow([{ t: '현재 평균 수익률', c: 'amber' }, retSeg(avg, 8)], { gapAbove: true }));
