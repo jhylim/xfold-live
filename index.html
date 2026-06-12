@@ -238,8 +238,15 @@ async function load() {
       { t: tag, c: 'flat', right: true }], { gapAbove: true }));
     const slice = pos.slice(idx * PAGE, idx * PAGE + PAGE);
     slice.forEach(p => {
-      posBox.appendChild(makeRow([{ t: p.code }, { t: p.name },
-        retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]));
+      const row = makeRow([{ t: p.code }, { t: p.name },
+        retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]);
+      /* 종목 클릭 → 차트·투자 근거 페이지 */
+      row.style.cursor = 'pointer';
+      row.title = p.name + ' — 차트와 투자 근거 보기';
+      row.addEventListener('mouseenter', () => row.style.filter = 'brightness(1.35)');
+      row.addEventListener('mouseleave', () => row.style.filter = '');
+      row.addEventListener('click', () => location.href = './chart.html?t=' + p.code);
+      posBox.appendChild(row);
     });
     for (let i = slice.length; i < PAGE; i++) posBox.appendChild(blankRow());
   }

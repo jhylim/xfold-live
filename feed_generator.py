@@ -90,6 +90,13 @@ print(f"✓ board.json 생성 — 누적 {total_pct}% · 현재평균 {avg_open}
 # ---- 라이브 차트 피드: 종목별 가격 시리즈 + 박제 목표가 + 설정일 ----
 def build_charts():
     ledger_state = j('ledger_state.json', {}).get('tickers', {})
+    gate = j('buy_gate_v3.json', {})
+    diag = {r.get('ticker'): r for r in (j('signal_diagnose.json', []) or []) if isinstance(r, dict)}
+    maxbt = j('max_backtest.json', {})
+    grow = {}
+    for grp in ['go', 'go_limit', 'wait', 'reject', 'stopped']:
+        for r in gate.get(grp, []) or []:
+            grow[r.get('ticker')] = {**r, '_grp': grp}
     cdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'charts')
     os.makedirs(cdir, exist_ok=True)
     listing = []
@@ -111,9 +118,40 @@ def build_charts():
         L('entry_1', '1차 매수', '#C0392B'); L('entry_2', '2차 매수', '#D98880'); L('entry_3', '3차 매수', '#E8B4AE')
         L('avg_cost', '평단', '#6B7280'); L('stop', '손절', '#B08D3C')
         L('target_1', '1차 익절', '#1F4E8C'); L('target_2', '2차 익절', '#7FA3D1'); L('target_3', '3차 익절', '#A9C4E3')
+        # ---- 투자 근거 (공개용 — 구조는 공개, 세부 변수는 비공개 원칙) ----
+        g = grow.get(tk, {})
+        d = diag.get(tk, {})
+        mb = maxbt.get(tk, {})
+        nm = rec.get('name', tk)
+        stage = d.get('stage') or g.get('stage') or ''
+        checks = []
+        if g:
+            n_cyc, win, cum = g.get('n_cyc'), g.get('win'), g.get('cum')
+            checks.append({'k': '패턴 자격', 'ok': bool(g.get('g1')),
+                           't': (f"10년 사이클 {n_cyc}회 · 적중 {win:.0f}% · 누적 {cum}×"
+                                 if g.get('g1') and n_cyc else '10년 검증 기준 미달')})
+            checks.append({'k': '시동 신호', 'ok': bool(g.get('g2')),
+                           't': '매집 종료 후 시동 신호 발화' if g.get('g2') else '시동 신호 대기 중'})
+            checks.append({'k': '진입 타이밍', 'ok': bool(g.get('g3')),
+                           't': '추격이 아닌 진입 구간' if g.get('g3')
+                               else (f"현재 '{stage}' 구간 — 추격 매수 금지" if stage else '진입 구간 아님')})
+            checks.append({'k': '시장 상태', 'ok': gate.get('slot_mode') != 'LIMIT',
+                           't': f"거시 모드 {gate.get('slot_mode', '-')} · 동시 운용 {gate.get('slot_count', '-')}슬롯"})
+        call = ''
+        if mb:
+            call = (f"{nm}은(는) 10년 데이터에서 매집→분출 사이클이 {mb.get('n_trades', '-')}회 반복된 종목. "
+                    f"과거 사이클 평균 +{mb.get('avg_ret_pct', '-')}% · 최고 +{mb.get('best_ret_pct', '-')}% · "
+                    f"평균 보유 {mb.get('avg_hold', '-')}일.")
+        if sd:
+            call += f" {sd} 신호 시점에 매수·목표·손절가가 박제되었다."
+        rationale = {'engine': 'CYCLE', 'stage': stage, 'verdict': g.get('verdict'),
+                     'call': call.strip(), 'checks': checks,
+                     'weight_pct': 20,
+                     'expected_hold': (f"{fx.get('hold_range_min')}~{fx.get('hold_range_max')}일"
+                                       if fx.get('hold_range_min') else None)}
         json.dump({'ticker': tk, 'name': rec.get('name', tk), 'status': st,
                    'signal_date': sd, 'version': ledger_state.get(tk, {}).get('version', 1),
-                   'levels': levels,
+                   'levels': levels, 'rationale': rationale,
                    'hold_min': fx.get('hold_range_min'), 'hold_max': fx.get('hold_range_max'),
                    'data': series[-500:]},
                   open(os.path.join(cdir, tk.replace('.', '_') + '.json'), 'w'), ensure_ascii=False)
