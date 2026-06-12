@@ -325,12 +325,17 @@ async function select(ticker, push){
   $('verdict').textContent = stopped ? 'VERDICT — STOPPED (손절 집행 완료, 재진입은 게이트 재통과 시)' :
     (r.verdict ? `VERDICT — ${r.verdict}${r.verdict === 'WAIT' ? ' (조건 미충족 구간, 신규 진입 보류)' : ''}` : '');
 
-  /* 박제 가격표 */
+  /* 박제 가격표 — 매도 집행 중이면 익절 사다리는 흐리게 (계획은 보존, 집행은 TODAY 우선) */
+  const selling = od && od.side === 'SELL';
   $('sealMeta').textContent = (d.version || 1) + '차 박제 · ' + (d.signal_date || '');
   const sl = $('seals'); sl.innerHTML = '';
   (d.levels || []).forEach(lv => {
+    const isTarget = (lv.label || '').includes('익절');
     const row = document.createElement('div'); row.className = 'seal-row';
-    row.innerHTML = `<span class="lbl"><i style="background:${lv.color}"></i>${lv.label}</span><span class="val">${fmt(lv.price)}</span>`;
+    if (selling && isTarget) row.style.opacity = '.4';
+    row.innerHTML = `<span class="lbl"><i style="background:${lv.color}"></i>${lv.label}` +
+      (selling && isTarget ? ' <span style="font-size:10px;color:#6E7077;">— 원계획 (집행은 TODAY 가이드)</span>' : '') +
+      `</span><span class="val">${fmt(lv.price)}</span>`;
     sl.appendChild(row);
   });
 
