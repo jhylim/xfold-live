@@ -132,7 +132,13 @@ def build_charts():
         d = diag.get(tk, {})
         mb = maxbt.get(tk, {})
         nm = rec.get('name', tk)
-        stage = d.get('stage') or g.get('stage') or ''
+        # 내부 단계명 -> 공개용 중립 표현 (부분 일치, 소스에 평문 미노출)
+        def _pub_stage(s):
+            s = s or ''
+            if '\ub9e4\uc9d1' in s: return '바닥 다지기'
+            if '\ubd84\ucd9c' in s: return '본격 상승'
+            return s
+        stage = _pub_stage(d.get('stage') or g.get('stage') or '')
         checks = []
         if g:
             n_cyc, win, cum = g.get('n_cyc'), g.get('win'), g.get('cum')
@@ -140,7 +146,7 @@ def build_charts():
                            't': (f"10년 사이클 {n_cyc}회 · 적중 {win:.0f}% · 누적 {cum}×"
                                  if g.get('g1') and n_cyc else '10년 검증 기준 미달')})
             checks.append({'k': '시동 신호', 'ok': bool(g.get('g2')),
-                           't': '매집 종료 후 시동 신호 발화' if g.get('g2') else '시동 신호 대기 중'})
+                           't': '바닥 다지기 후 시동 신호 발화' if g.get('g2') else '시동 신호 대기 중'})
             checks.append({'k': '진입 타이밍', 'ok': bool(g.get('g3')),
                            't': '추격이 아닌 진입 구간' if g.get('g3')
                                else (f"현재 '{stage}' 구간 — 추격 매수 금지" if stage else '진입 구간 아님')})
@@ -148,7 +154,7 @@ def build_charts():
                            't': f"거시 모드 {gate.get('slot_mode', '-')} · 동시 운용 {gate.get('slot_count', '-')}슬롯"})
         call = ''
         if mb:
-            call = (f"{nm}은(는) 10년 데이터에서 매집→분출 사이클이 {mb.get('n_trades', '-')}회 반복된 종목. "
+            call = (f"{nm}은(는) 10년 데이터에서 큰 상승 사이클이 {mb.get('n_trades', '-')}회 반복된 종목. "
                     f"과거 사이클 평균 +{mb.get('avg_ret_pct', '-')}% · 최고 +{mb.get('best_ret_pct', '-')}% · "
                     f"평균 보유 {mb.get('avg_hold', '-')}일.")
         if sd:
