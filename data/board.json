@@ -1,30 +1,49 @@
 {
  "brand": "XFOLD LIVE",
  "owner": "XFOLD",
- "tagline": "AI가 매일 박제하는 진짜 수익률",
- "as_of": "2026-06-12",
- "season": "PRE-SEASON",
- "season_note": "시뮬 검증 구간 — KIS 모의계좌 연동 후 SEASON 1 시작",
- "total_return_pct": -1.39,
- "total_note": "누적 실현손익 기준 (거래 로그 재계산)",
- "avg_open_return_pct": null,
+ "tagline": "시연 데이터 — 실기록 아님 (DEMO)",
+ "as_of": "2026-06-13",
+ "season": "DEMO",
+ "season_note": "화면 시연용 더미 — 실제 운용 기록은 PRE-SEASON 전환 시 게시",
+ "total_return_pct": 38.42,
+ "total_note": "DEMO — 시연용 더미 수익률",
+ "avg_open_return_pct": 21.98,
  "slots": 5,
- "positions": [],
- "decisions_today": [
+ "positions": [
   {
-   "time": "08:30",
-   "action": "관망",
-   "note": "매수 가능 0건 · 청산 관찰 4건 · 현금 파킹 100%"
+   "code": "064550",
+   "name": "바이오니아",
+   "weight_pct": 20,
+   "return_pct": 12.4,
+   "status": "RUN"
   },
   {
-   "time": "12:30",
-   "action": "관망",
-   "note": "중간 점검 · 매수 가능 0건 · 청산 관찰 4건"
+   "code": "013360",
+   "name": "일성건설",
+   "weight_pct": 20,
+   "return_pct": 31.2,
+   "status": "RUN"
   },
   {
-   "time": "15:40",
-   "action": "박제",
-   "note": "장 마감 · 오늘의 보드 기록 확정"
+   "code": "000725",
+   "name": "현대건설우",
+   "weight_pct": 20,
+   "return_pct": 5.8,
+   "status": "RUN"
+  },
+  {
+   "code": "084180",
+   "name": "수성웹툰",
+   "weight_pct": 20,
+   "return_pct": -4.2,
+   "status": "RUN"
+  },
+  {
+   "code": "007390",
+   "name": "네이처셀",
+   "weight_pct": 20,
+   "return_pct": 64.7,
+   "status": "RUN"
   }
  ],
  "disclaimer": "본 전광판의 데이터와 AI 분석은 확률적 결과물이며, 최종 투자의 책임은 사용자 본인에게 있습니다."
