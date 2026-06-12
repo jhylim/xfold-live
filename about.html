@@ -48,7 +48,7 @@ h2{font-size:11px; letter-spacing:0.4em; color:var(--amber); font-weight:800; ma
 .eng .d{font-size:13.5px; color:#9FA1A7;}
 
 /* 검증 스탯 — 숫자가 말하게 */
-.stats{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:36px;}
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:36px;}
 .stat{background:#101114; border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:30px 20px; text-align:center;
   box-shadow:0 18px 40px -26px rgba(20,20,22,.5);}
 .stat .v{font-family:'JetBrains Mono'; font-size:34px; font-weight:800; letter-spacing:-0.02em; color:#F6F6F0;}
@@ -71,7 +71,6 @@ h2{font-size:11px; letter-spacing:0.4em; color:var(--amber); font-weight:800; ma
 .fine{margin-top:9vh; padding-top:26px; border-top:1px solid var(--hair);
   font-size:11.5px; color:var(--faint); line-height:2.1; text-align:center; word-break:keep-all;}
 footer{text-align:center; padding:30px 20px 36px; color:#9C9C96; font-size:10.5px; letter-spacing:0.06em;}
-@media (min-width:1100px){ .stats{grid-template-columns:repeat(4,1fr);} .stat.wide{grid-column:1 / -1;} }
 @media (max-width:560px){ .stats{grid-template-columns:1fr;} .stat .v{font-size:28px;} }
 
 @media (max-width:640px){
@@ -130,13 +129,11 @@ footer{text-align:center; padding:30px 20px 36px; color:#9C9C96; font-size:10.5p
 
   <section>
     <h2>THE EVIDENCE</h2>
-    <p class="prose">10년 데이터 재현 검증과 1,000가지 시나리오 시뮬레이션을 거쳤습니다.</p>
+    <p class="prose">10년 × 1,000가지 시나리오 — 매 시점 "그때까지의 데이터"만으로 재현한 결과입니다.</p>
     <div class="stats">
-      <div class="stat wide"><div class="v">10년 × 1,000경로</div><div class="k">매 시점 "그때까지의 데이터"만으로 10년을 재현 — 결과를 보고 끼워 맞춘 검증이 아닙니다</div></div>
-      <div class="stat"><div class="v">≈ 0%</div><div class="k">1,000개 시나리오 중 10년 뒤 원금 손실로 끝난 비율</div></div>
-      <div class="stat"><div class="v">86~94%</div><div class="k">10년 안에 자산이 3배 이상이 된 시나리오 비율</div></div>
-      <div class="stat"><div class="v">77.5%</div><div class="k">지수 급락 다음 날 샀을 때 20일 뒤 수익이었던 비율</div></div>
-      <div class="stat"><div class="v">47~128일</div><div class="k">거래 한 건을 들고 가는 기간 (중앙값 94일)</div></div>
+      <div class="stat"><div class="v">≈ 0%</div><div class="k">10년 뒤 원금 손실로 끝난 시나리오</div></div>
+      <div class="stat"><div class="v">86~94%</div><div class="k">10년 안에 자산 3배 이상</div></div>
+      <div class="stat"><div class="v">77.5%</div><div class="k">급락 다음 날 매수의 20일 승률</div></div>
     </div>
     <div class="stats-note">물론 백테스트는 과거를 재현한 것일 뿐, 미래를 보장하지 않습니다.<br>그래서 진짜 검증은 여기서 합니다 — 이 사이트에 매일 실시간으로 쌓이는 기록으로.</div>
   </section>
