@@ -139,6 +139,12 @@ footer{position:relative; z-index:10; text-align:center; padding:26px 20px 30px;
   </div></div>
 
   <div class="main">
+    <div class="panel" id="orderPanel" style="display:none;"><div class="inner">
+      <div class="ptitle">TODAY — 오늘의 집행 가이드 <span class="sub" id="orderMeta"></span></div>
+      <div id="orderRows"></div>
+      <div class="plan-fine">아래 박제 가격표는 신호 시점의 계획이며 수정되지 않는다.<br>이 가이드는 현재 단계 판단에 따른 오늘의 집행 — 둘은 구분해 기록된다.</div>
+    </div></div>
+
     <div class="panel"><div class="inner">
       <div class="ptitle">PRICE × SEALED LEVELS <span class="sub" id="chartMeta"></span></div>
       <div id="chart"></div>
@@ -286,6 +292,27 @@ async function select(ticker, push){
 
   /* 근거 */
   const r = d.rationale || {};
+
+  /* 오늘의 집행 가이드 */
+  const op = $('orderPanel'), orw = $('orderRows');
+  const od = r.orders;
+  if (od && (od.rows || []).length) {
+    op.style.display = '';
+    $('orderMeta').textContent = od.side === 'SELL' ? '매도' : '매수';
+    orw.innerHTML = `<div class="gate-verdict" style="margin:0 0 10px;">${od.side} — ${od.reason || ''}</div>`;
+    od.rows.forEach(o => {
+      const row = document.createElement('div'); row.className = 'seal-row';
+      row.innerHTML = `<span class="lbl">${o.step} · 보유의 ${o.pct}%${o.condition ? ' — ' + o.condition : ''}</span>` +
+                      `<span class="val">${fmt(o.price)}</span>`;
+      orw.appendChild(row);
+    });
+  } else if (od && od.side === 'BUY') {
+    op.style.display = '';
+    $('orderMeta').textContent = '매수';
+    orw.innerHTML = `<div class="gate-verdict" style="margin:0;">BUY — ${od.reason || ''} (박제 가격표 기준 분할 진입)</div>`;
+  } else {
+    op.style.display = 'none';
+  }
   $('call').innerHTML = (r.call || '근거 데이터 준비 중입니다.')
     .replace(/(\+?[\d.,]+[%×회일])/g, '<b>$1</b>');
   const gt = $('gates'); gt.innerHTML = '';

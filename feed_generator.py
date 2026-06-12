@@ -158,6 +158,21 @@ def build_charts():
                      'weight_pct': 20,
                      'expected_hold': (f"{fx.get('hold_range_min')}~{fx.get('hold_range_max')}일"
                                        if fx.get('hold_range_min') else None)}
+        # ---- 오늘의 집행 가이드 (orders_guide — 박제 계획과 별개의 현재 판단) ----
+        orders = None
+        og = j('orders_guide.json', {})
+        for row in og.get('sells', []) or []:
+            if row.get('ticker') == tk:
+                orders = {'side': 'SELL', 'reason': f"현재 단계 '{stage}' — 분할 매도 집행" if stage else '분할 매도 집행',
+                          'rows': [{'step': o.get('step'), 'pct': o.get('pct'),
+                                    'price': o.get('price'), 'condition': o.get('condition')}
+                                   for o in row.get('orders', [])]}
+        if not orders:
+            for grp, label in [('go', '매수 집행 가능'), ('go_limit', '지정가 매수 대기')]:
+                for row in gate.get(grp, []) or []:
+                    if row.get('ticker') == tk:
+                        orders = {'side': 'BUY', 'reason': label, 'rows': []}
+        rationale['orders'] = orders
         json.dump({'ticker': tk, 'name': rec.get('name', tk), 'status': st,
                    'signal_date': sd, 'version': ledger_state.get(tk, {}).get('version', 1),
                    'levels': levels, 'rationale': rationale,
