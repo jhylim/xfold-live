@@ -33,7 +33,7 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a.on,.nav a:hover{color:#0A0A0A;}
 
-.wrap{max-width:1180px; margin:0 auto; padding:108px 22px 70px; position:relative; z-index:10;}
+.wrap{width:min(84vw,1480px); margin:0 auto; padding:108px 0 70px; position:relative; z-index:10;}
 
 /* ─ 종목 셀렉터: 플립 보드 칩 ─ */
 .picker{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
@@ -324,6 +324,21 @@ async function select(ticker, push){
   });
 }
 boot();
+
+/* LIVE 보드와 동일한 3D 틸트 — 패널이 마우스를 따라 살짝 기울어짐 */
+(() => {
+  document.querySelectorAll('.panel, .head-board, .engines, .stat, .seal').forEach(el => {
+    el.style.transition = 'transform .18s ease-out';
+    el.style.willChange = 'transform';
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(1600px) rotateY(${nx * 3.2}deg) rotateX(${ny * -2.2}deg) translateZ(0)`;
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+})();
 </script>
 </body>
 </html>

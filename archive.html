@@ -33,7 +33,7 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a.on, .nav a:hover{color:var(--ink);}
 
-.wrap{max-width:980px; margin:0 auto; padding:13vh 22px 80px; position:relative; z-index:10;}
+.wrap{width:min(84vw,1480px); margin:0 auto; padding:13vh 0 80px; position:relative; z-index:10;}
 .page-title{font-size:13px; letter-spacing:0.42em; color:#8A8A84; font-weight:800; text-align:center;}
 .page-sub{text-align:center; color:var(--faint); font-size:12px; letter-spacing:0.12em; margin-top:10px;}
 
@@ -218,6 +218,21 @@ function drawSpark(vals) {
   x.beginPath(); x.arc(px(vals.length - 1), py(vals[vals.length - 1]), 3.5, 0, 7); x.fill();
 }
 load();
+
+/* LIVE 보드와 동일한 3D 틸트 — 패널이 마우스를 따라 살짝 기울어짐 */
+(() => {
+  document.querySelectorAll('.panel, .head-board, .engines, .stat, .seal').forEach(el => {
+    el.style.transition = 'transform .18s ease-out';
+    el.style.willChange = 'transform';
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(1600px) rotateY(${nx * 3.2}deg) rotateX(${ny * -2.2}deg) translateZ(0)`;
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+})();
 </script>
 </body>
 </html>

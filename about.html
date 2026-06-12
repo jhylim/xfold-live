@@ -22,7 +22,8 @@ body::before{content:''; position:fixed; inset:0; pointer-events:none; z-index:8
 .nav .grp{display:flex; gap:26px;}
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a.on,.nav a:hover{color:var(--ink);}
-.wrap{max-width:640px; margin:0 auto; padding:0 22px 90px;}
+.wrap{width:min(84vw,1480px); margin:0 auto; padding:0 0 90px;}
+.prose,.stats-note,.fine,.opening .echo{max-width:640px; margin-left:auto; margin-right:auto;}
 
 /* ─ 오프닝: 한 문장의 방 ─ */
 .opening{min-height:88vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
@@ -70,6 +71,7 @@ h2{font-size:11px; letter-spacing:0.4em; color:var(--amber); font-weight:800; ma
 .fine{margin-top:9vh; padding-top:26px; border-top:1px solid var(--hair);
   font-size:11.5px; color:var(--faint); line-height:2.1; text-align:center; word-break:keep-all;}
 footer{text-align:center; padding:30px 20px 36px; color:#9C9C96; font-size:10.5px; letter-spacing:0.06em;}
+@media (min-width:1100px){ .stats{grid-template-columns:repeat(4,1fr);} .stat.wide{grid-column:1 / -1;} }
 @media (max-width:560px){ .stats{grid-template-columns:1fr;} .stat .v{font-size:28px;} }
 </style>
 </head>
@@ -155,5 +157,21 @@ footer{text-align:center; padding:30px 20px 36px; color:#9C9C96; font-size:10.5p
 </div>
 
 <footer>XFOLD LIVE · © 2026 XFOLD</footer>
+<script>
+/* LIVE 보드와 동일한 3D 틸트 — 패널이 마우스를 따라 살짝 기울어짐 */
+(() => {
+  document.querySelectorAll('.panel, .head-board, .engines, .stat, .seal').forEach(el => {
+    el.style.transition = 'transform .18s ease-out';
+    el.style.willChange = 'transform';
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(1600px) rotateY(${nx * 3.2}deg) rotateX(${ny * -2.2}deg) translateZ(0)`;
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+})();
+</script>
 </body>
 </html>
