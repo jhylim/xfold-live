@@ -28,6 +28,7 @@ body::after{
   background:radial-gradient(ellipse 135% 100% at 50% 40%, transparent 58%, rgba(40,40,38,.10) 100%);
 }
 .nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; justify-content:space-between; padding:22px 30px;}
+.nav .grp{display:flex; gap:26px;}
 .nav a{color:#7A7A74; text-decoration:none; font-size:11px; letter-spacing:0.34em; font-weight:700;}
 .nav a:hover{color:#0A0A0A;}
 
@@ -81,14 +82,21 @@ footer{position:relative; z-index:30; text-align:center; padding:26px 20px 24px;
   border-radius:18px; padding:7px 13px; font-size:11px; color:#6B7280; cursor:pointer; user-select:none;
   box-shadow:0 2px 8px rgba(0,0,0,.05);}
 @media (max-width:760px){
-  .scene{min-height:560px;}
+  .scene{min-height:480px; height:86vh;}
+  .board-wrap{width:94vw; top:11vh;}
+  .reflection{width:94vw;}
+}
+@media (max-width:640px){
+  .nav{padding:13px 14px;}
+  .nav .grp{gap:13px;}
+  .nav a{font-size:9.5px; letter-spacing:0.14em;}
 }
 </style>
 </head>
 <body>
 <nav class="nav">
   <a href="#">XFOLD LIVE</a>
-  <div style="display:flex;gap:26px;">
+  <div class="grp">
     <a href="#" style="color:#0A0A0A;">LIVE</a>
     <a href="./chart.html">CHART</a>
     <a href="./archive.html">LEDGER</a>
@@ -111,7 +119,8 @@ footer{position:relative; z-index:30; text-align:center; padding:26px 20px 24px;
 
 <script>
 /* ================= 보드 ================= */
-const COLS = 30;
+const MOBILE = window.matchMedia('(max-width:640px)').matches;
+const COLS = MOBILE ? 20 : 30;
 const CHARS = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.+-%·';
 let SOUND = false, actx;
 
@@ -205,8 +214,12 @@ async function load() {
   try { const r = await fetch('./data/board.json', { cache: 'no-store' }); if (r.ok) d = await r.json(); } catch (e) {}
   sizeCells();
   const g = document.getElementById('grid');
-  g.appendChild(makeRow([{ t: 'XFOLD LIVE', c: 'amber' }, { t: d.season || '', c: 'amber', right: true }]));
-  g.appendChild(makeRow([{ t: 'DAILY PROOF BOARD' }, { t: d.as_of || '', c: 'flat', right: true }]));
+  g.appendChild(makeRow(MOBILE
+    ? [{ t: 'XFOLD', c: 'amber' }, { t: d.season || '', c: 'amber', right: true }]
+    : [{ t: 'XFOLD LIVE', c: 'amber' }, { t: d.season || '', c: 'amber', right: true }]));
+  g.appendChild(makeRow(MOBILE
+    ? [{ t: 'PROOF' }, { t: d.as_of || '', c: 'flat', right: true }]
+    : [{ t: 'DAILY PROOF BOARD' }, { t: d.as_of || '', c: 'flat', right: true }]));
   /* 포지션 영역 — 한 장(슬롯 수)을 넘어가면 공항 전광판처럼 페이지 로테이션 */
   const PAGE = d.slots || 5;
   const pos = d.positions || [];
@@ -217,12 +230,14 @@ async function load() {
   function showPage(idx) {
     posBox.innerHTML = '';
     const tag = pages > 1 ? `${idx + 1}/${pages}` : '';
-    posBox.appendChild(makeRow([{ t: 'ACTIVE POSITIONS', c: 'amber' },
+    posBox.appendChild(makeRow([{ t: MOBILE ? 'POSITIONS' : 'ACTIVE POSITIONS', c: 'amber' },
       { t: tag, c: 'flat', right: true }], { gapAbove: true }));
     const slice = pos.slice(idx * PAGE, idx * PAGE + PAGE);
     slice.forEach(p => {
-      const row = makeRow([{ t: p.code }, { t: p.name },
-        retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]);
+      const row = makeRow(MOBILE
+        ? [{ t: (p.name || '').slice(0, 7) }, retSeg(p.return_pct, 7)]
+        : [{ t: p.code }, { t: p.name },
+           retSeg(p.return_pct), { t: ' ' + (p.status || 'RUN'), c: 'flat', right: true }]);
       /* 종목 클릭 → 차트·투자 근거 페이지 */
       row.style.cursor = 'pointer';
       row.title = p.name + ' — 차트와 투자 근거 보기';
@@ -238,8 +253,8 @@ async function load() {
   if (pages > 1) setInterval(() => { pageIdx = (pageIdx + 1) % pages; showPage(pageIdx); }, 8000);
   const avg = (typeof d.avg_open_return_pct === 'number') ? d.avg_open_return_pct
             : ((d.positions || []).length ? d.positions.reduce((s, p) => s + (p.return_pct || 0), 0) / d.positions.length : null);
-  g.appendChild(makeRow([{ t: '현재 평균 수익률', c: 'amber' }, retSeg(avg, 8)], { gapAbove: true }));
-  g.appendChild(makeRow([{ t: '누적 수익률', c: 'amber' }, retSeg(d.total_return_pct || 0, 8)]));
+  g.appendChild(makeRow([{ t: MOBILE ? '평균' : '현재 평균 수익률', c: 'amber' }, retSeg(avg, 8)], { gapAbove: true }));
+  g.appendChild(makeRow([{ t: MOBILE ? '누적' : '누적 수익률', c: 'amber' }, retSeg(d.total_return_pct || 0, 8)]));
 
   /* 바닥 반사: 보드 완성 후 복제 */
   setTimeout(() => {
