@@ -97,6 +97,26 @@ body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:79
 .rgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
 @media (max-width:860px){ .rgrid{grid-template-columns:1fr;} #chart{height:340px;} }
 
+/* 10년 거래 성적 (THE RECORD) — 풀폭 다크 패널 */
+.record{grid-column:1 / -1;}
+.rec-sub{color:var(--dim); letter-spacing:0.06em; font-weight:700; font-size:10px; float:right; font-family:'JetBrains Mono';}
+.rec-big{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:11px;}
+.rec-cell{background:rgba(255,255,255,.03); border:1px solid var(--hairD); border-radius:7px; padding:13px 12px; text-align:center;}
+.rec-cell.hi{border-color:rgba(255,197,66,.45); background:rgba(255,197,66,.06);}
+.rec-cell .rk{font-size:10px; color:var(--dim); letter-spacing:0.1em; font-weight:700;}
+.rec-cell .rv{font-family:'JetBrains Mono'; font-size:23px; font-weight:800; color:var(--txt); margin-top:5px; letter-spacing:-0.01em;}
+.rec-cell.hi .rv{color:var(--amber);}
+.rec-cell .rv small{font-size:12px; font-weight:700; color:var(--dim); margin-left:2px;}
+.rec-small{display:grid; grid-template-columns:repeat(3,1fr); gap:9px;}
+.rec-s{padding:9px 4px; text-align:center; border-top:1px solid var(--hairD);}
+.rec-s .sk{font-size:10px; color:var(--dim); letter-spacing:0.04em; font-weight:700;}
+.rec-s .sv{font-family:'JetBrains Mono'; font-size:14px; font-weight:800; color:var(--flat); margin-top:4px;}
+.rec-note{margin-top:13px; font-size:11.5px; line-height:1.8; word-break:keep-all; padding:11px 13px; border-radius:7px;}
+.rec-note.warn{color:#FFB6B0; background:rgba(255,97,87,.09); border:1px solid rgba(255,97,87,.22);}
+.rec-note.good{color:#A8E0BE; background:rgba(63,180,107,.08); border:1px solid rgba(63,180,107,.22);}
+.rec-note.neu{color:var(--flat); background:rgba(255,255,255,.03); border:1px solid var(--hairD);}
+.rec-note b{font-weight:800; color:var(--txt);}
+
 /* THE CALL */
 .call{font-size:14.5px; color:#C9CBCF; line-height:2.0; word-break:keep-all;}
 .call b{color:var(--txt);}
@@ -179,6 +199,11 @@ footer{position:relative; z-index:10; text-align:center; padding:26px 20px 30px;
     </div></div>
 
     <div class="rgrid">
+      <div class="panel record" id="recordPanel" style="display:none;"><div class="inner">
+        <div class="ptitle">10년 거래 성적 <span class="rec-sub" id="recMeta"></span></div>
+        <div id="recordBody"></div>
+      </div></div>
+
       <div class="panel"><div class="inner">
         <div class="ptitle">THE CALL — 왜 이 종목인가</div>
         <div class="call" id="call">—</div>
@@ -378,6 +403,9 @@ async function select(ticker, push){
   /* 근거 */
   const r = d.rationale || {};
 
+  /* 10년 거래 성적 — feed_generator가 넣은 rationale.stats (없을 수 있음) */
+  renderRecord(r.stats);
+
   /* 오늘의 집행 가이드 */
   const op = $('orderPanel'), orw = $('orderRows');
   const od = r.orders;
@@ -439,6 +467,45 @@ async function select(ticker, push){
     row.innerHTML = `<span class="k">${k}</span><span class="v">${v}</span>`;
     pl.appendChild(row);
   });
+}
+
+/* 10년 거래 성적 패널 — 모든 % 는 "거래당" 기준 (헤더 명시) */
+function renderRecord(s){
+  const panel = $('recordPanel');
+  if (!s || s.n == null) { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  const sgn = n => (n > 0 ? '+' : '') + n;
+  $('recMeta').textContent =
+    `거래당 기준 · ${s.n}회 · 평균 보유 ${s.avg_hold == null ? '—' : Math.round(s.avg_hold)}일`;
+
+  const bigCell = (k, v, hi) =>
+    `<div class="rec-cell${hi ? ' hi' : ''}"><div class="rk">${k}</div><div class="rv">${v}</div></div>`;
+  const smCell = (k, v) =>
+    `<div class="rec-s"><div class="sk">${k}</div><div class="sv">${v}</div></div>`;
+
+  let note = '';
+  if (s.grade === '복권형') {
+    note = `<div class="rec-note warn">⚠ <b>복권형</b> — 최고 성적을 빼면 거래당 <b>${sgn(s.per_trade)}%</b>, ` +
+           `그 한 방이 전체의 <b>${s.one_shot}%</b>. 운(運) 의존이 큰 종목입니다.</div>`;
+  } else if (s.grade === '견고') {
+    note = `<div class="rec-note good"><b>견고</b> — 최고 성적을 빼도 거래당 <b>${sgn(s.per_trade)}%</b>, ` +
+           `반복적으로 수익이 나는 종목입니다.</div>`;
+  } else if (s.grade) {
+    note = `<div class="rec-note neu"><b>${s.grade}</b> — 거래당 <b>${sgn(s.per_trade)}%</b> (한방의존 ${s.one_shot}%).</div>`;
+  }
+
+  $('recordBody').innerHTML =
+    `<div class="rec-big">
+       ${bigCell('승률', s.win + '%')}
+       ${bigCell('손익비', s.payoff + '<small>배</small>')}
+       ${bigCell('거래당 평균', sgn(s.per_trade) + '%', true)}
+     </div>
+     <div class="rec-small">
+       ${smCell('평균', sgn(s.avg) + '%')}
+       ${smCell('최고 성적', '+' + s.best + '% · ' + s.best_hold + '일')}
+       ${smCell('한방의존', s.one_shot + '%')}
+     </div>
+     ${note}`;
 }
 boot();
 

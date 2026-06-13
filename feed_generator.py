@@ -52,6 +52,16 @@ if not positions:
             'code': str(p.get('ticker', ''))[:6], 'name': p.get('name', '?'),
             'weight_pct': 20, 'return_pct': round(p.get('pnl_pct', 0) or 0, 1), 'status': 'RUN'})
 
+
+# 보유 종목에 등급(복권형 경고) 부착 — 코어 stats_extra 기준
+_sx_all = j('stats_extra.json', {})
+_nm2tk = {v.get('name'): k for k, v in (trk or {}).items()}
+for _p in positions:
+    _tk = next((k for k in _sx_all if k.split('.')[0] == _p['code']), None)
+    if _tk:
+        _p['grade'] = _sx_all[_tk].get('grade')
+        _p['per_trade'] = _sx_all[_tk].get('per_trade')
+
 # ---- 현재 평균 수익률 (보유 종목 평균, 무포지션이면 None) ----
 avg_open = round(sum(p['return_pct'] for p in positions) / len(positions), 2) if positions else None
 
@@ -100,6 +110,7 @@ def build_charts():
     gate = j('buy_gate_v3.json', {})
     diag = {r.get('ticker'): r for r in (j('signal_diagnose.json', []) or []) if isinstance(r, dict)}
     maxbt = j('max_backtest.json', {})
+    statsx = j('stats_extra.json', {})   # 거래당평균·등급 — 코어 공용
     grow = {}
     for grp in ['go', 'go_limit', 'wait', 'reject', 'stopped']:
         for r in gate.get(grp, []) or []:
@@ -159,9 +170,17 @@ def build_charts():
                     f"평균 보유 {mb.get('avg_hold', '-')}일.")
         if sd:
             call += f" {sd} 신호 시점에 매수·목표·손절가가 기록되었다."
+        sx = statsx.get(tk)
+        stats = None
+        if sx:
+            stats = {'n': sx.get('n'), 'win': sx.get('win_rate'), 'payoff': sx.get('payoff'),
+                     'per_trade': sx.get('per_trade'), 'best': sx.get('best'),
+                     'best_hold': sx.get('best_hold'), 'avg': sx.get('avg'),
+                     'avg_hold': sx.get('avg_hold'), 'one_shot': sx.get('one_shot_dep'),
+                     'grade': sx.get('grade')}
         rationale = {'engine': 'CYCLE', 'stage': stage, 'verdict': g.get('verdict'),
                      'call': call.strip(), 'checks': checks,
-                     'weight_pct': 20,
+                     'weight_pct': 20, 'stats': stats,
                      'expected_hold': (f"{fx.get('hold_range_min')}~{fx.get('hold_range_max')}일"
                                        if fx.get('hold_range_min') else None)}
         # ---- 오늘의 집행 가이드 (orders_guide — 박제 계획과 별개의 현재 판단) ----
